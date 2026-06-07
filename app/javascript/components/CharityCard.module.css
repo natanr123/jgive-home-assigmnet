@@ -1,0 +1,45 @@
+.card {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  background: var(--bg-soft);
+}
+
+.heading {
+  margin: 0 0 0.75rem;
+  font-size: 1.05rem;
+}
+
+.list {
+  margin: 0;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.35rem 0;
+  border-bottom: 1px dashed var(--line);
+  font-size: 0.9rem;
+}
+
+.row dt {
+  color: var(--muted);
+  margin: 0;
+}
+
+.row dd {
+  margin: 0;
+  text-align: start;
+  word-break: break-word;
+}
+
+.note {
+  margin-top: 1rem;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.note p {
+  margin: 0.35rem 0 0;
+}

@@ -1,0 +1,33 @@
+.shell {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+@media (min-width: 860px) {
+  .layout {
+    grid-template-columns: 300px 1fr;
+    align-items: start;
+  }
+  .sidebar {
+    position: sticky;
+    top: 1rem;
+  }
+}
+
+.headline {
+  margin: 0 0 0.25rem;
+  font-size: 1.6rem;
+}
+
+.subtitle {
+  margin: 0 0 1.25rem;
+  color: var(--muted);
+}

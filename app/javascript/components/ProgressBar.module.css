@@ -1,0 +1,58 @@
+.wrap {
+  padding: 1.25rem 0;
+}
+
+.topRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.raised {
+  color: var(--brand-green);
+  font-size: clamp(2rem, 6vw, 3.4rem);
+  font-weight: 900;
+  line-height: 1;
+}
+
+.percent {
+  color: var(--brand-green);
+  font-weight: 500;
+  font-size: 1.1rem;
+}
+
+.track {
+  position: relative;
+  height: 12px;
+  background: #e2e2e2;
+  border-radius: 999px;
+  margin: 0.9rem 0 0.6rem;
+}
+
+.fill {
+  position: relative;
+  height: 100%;
+  background: var(--brand-green);
+  border-radius: 999px;
+  min-width: 12px;
+  transition: width 0.4s ease;
+}
+
+/* Orange heart marker riding the tip of the fill (RTL: left edge). */
+.heart {
+  position: absolute;
+  left: -10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.4rem;
+  line-height: 1;
+}
+
+.bottomRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  color: var(--ink);
+  font-size: 0.95rem;
+}

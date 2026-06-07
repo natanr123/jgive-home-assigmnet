@@ -1,7 +1,7 @@
 export const CAMPAIGN_QUERY = `
   query Campaign($id: ID!) {
     campaign(id: $id) {
-      id name subtitle storyHtml coverImagePath goalAmountCents currency
+      id name subtitle storyHtml coverImageUrl goalAmountCents currency
       presetAmounts { amountCents label }
       stats { raisedCents donorsCount percent goalAmountCents }
       charityOrganization { id name email phoneNumber websiteUrl charityNumber aboutHtml }

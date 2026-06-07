@@ -1,8 +1,16 @@
-import { useLoaderData, type LoaderFunctionArgs } from "react-router";
+import { useLoaderData, Outlet, type LoaderFunctionArgs } from "react-router";
 import { gql } from "../lib/gql";
 import { CAMPAIGN_QUERY } from "../lib/queries";
-import { formatILS } from "../lib/format";
 import type { Campaign } from "../lib/types";
+import { he } from "../locales/he";
+import Hero from "../components/Hero";
+import ProgressBar from "../components/ProgressBar";
+import CtaBlock from "../components/CtaBlock";
+import Tabs, { type TabDef } from "../components/Tabs";
+import AboutTab from "../components/AboutTab";
+import OrganizationTab from "../components/OrganizationTab";
+import RecentDonationsTab from "../components/RecentDonationsTab";
+import styles from "./campaign.module.css";
 
 export async function campaignLoader({ params }: LoaderFunctionArgs): Promise<Campaign> {
   try {
@@ -15,20 +23,37 @@ export async function campaignLoader({ params }: LoaderFunctionArgs): Promise<Ca
   }
 }
 
-// Minimal end-to-end render — real UI lands in step 5.
 export default function CampaignPage() {
   const campaign = useLoaderData() as Campaign;
-  const { stats } = campaign;
+
+  const tabs: TabDef[] = [
+    { key: "about", label: he.tabs.about, render: () => <AboutTab campaign={campaign} /> },
+    { key: "recent", label: he.tabs.recentDonations, render: () => <RecentDonationsTab campaign={campaign} /> },
+    { key: "ambassadors", label: he.tabs.ambassadors, disabled: true },
+    { key: "groups", label: he.tabs.groups, disabled: true },
+    { key: "organization", label: he.tabs.organization, render: () => <OrganizationTab campaign={campaign} /> },
+    { key: "updates", label: he.tabs.updates, disabled: true },
+  ];
 
   return (
-    <main style={{ maxWidth: 720, margin: "2rem auto", padding: "0 1rem" }}>
-      <h1>{campaign.name}</h1>
-      <p>{campaign.subtitle}</p>
-      <p>
-        <strong style={{ color: "var(--brand-green)" }}>{formatILS(stats.raisedCents)}</strong> נאספו ·
-        יעד {formatILS(campaign.goalAmountCents)} · {stats.percent}% · {stats.donorsCount} תורמים
-      </p>
-      <p>עמותת {campaign.charityOrganization.name}</p>
+    <main className={styles.shell}>
+      <Hero campaign={campaign} />
+      <ProgressBar stats={campaign.stats} />
+
+      <div className={styles.layout}>
+        <div className={styles.sidebar}>
+          <CtaBlock campaign={campaign} />
+        </div>
+
+        <div>
+          <h2 className={styles.headline}>{campaign.name}</h2>
+          {campaign.subtitle && <p className={styles.subtitle}>{campaign.subtitle}</p>}
+          <Tabs tabs={tabs} />
+        </div>
+      </div>
+
+      {/* Donate modal (nested routes) mounts here — step 6. */}
+      <Outlet context={campaign} />
     </main>
   );
 }

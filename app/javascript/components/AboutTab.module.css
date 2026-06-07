@@ -1,0 +1,29 @@
+.layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+@media (min-width: 860px) {
+  .layout {
+    grid-template-columns: 1fr 320px;
+    align-items: start;
+  }
+}
+
+.story {
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+
+.story :global(h2) {
+  font-size: 1.5rem;
+}
+
+.story :global(h3) {
+  font-size: 1.2rem;
+}
+
+.story :global(p) {
+  margin: 0.75rem 0;
+}

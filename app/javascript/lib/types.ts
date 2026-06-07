@@ -25,7 +25,7 @@ export interface Campaign {
   name: string;
   subtitle?: string | null;
   storyHtml?: string | null;
-  coverImagePath?: string | null;
+  coverImageUrl?: string | null;
   goalAmountCents: number;
   currency: string;
   presetAmounts: PresetAmount[];
