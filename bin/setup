@@ -15,8 +15,9 @@ FileUtils.chdir APP_ROOT do
   puts "== Installing dependencies =="
   system("bundle check") || system!("bundle install")
 
-  # Install JavaScript dependencies
+  # Install JavaScript dependencies and build the SPA bundle (esbuild)
   system!("npm install")
+  system!("npm run build")
 
   # puts "\n== Copying sample files =="
   # unless File.exist?("config/database.yml")
