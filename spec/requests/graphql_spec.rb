@@ -118,4 +118,19 @@ RSpec.describe "POST /graphql", type: :request do
       expect(body["data"]["__schema"]["queryType"]["name"]).to eq("Query")
     end
   end
+
+  describe "unexpected server errors" do
+    it "returns a clean JSON 500 without re-raising or leaking internals" do
+      allow(JgiveHomeAssigmentSchema).to receive(:execute).and_raise(StandardError, "secret internal detail")
+
+      post "/graphql", params: { query: "{ __typename }" }.to_json,
+                       headers: { "CONTENT_TYPE" => "application/json" }
+
+      expect(response).to have_http_status(:internal_server_error)
+      body = JSON.parse(response.body)
+      expect(body["data"]).to be_nil
+      expect(body["errors"].first["message"]).to eq("Internal server error")
+      expect(response.body).not_to include("secret internal detail")
+    end
+  end
 end
