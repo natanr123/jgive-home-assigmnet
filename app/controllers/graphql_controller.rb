@@ -4,6 +4,10 @@ class GraphqlController < ApplicationController
   # Same-origin SPA: Rails' default CSRF protection applies and the client sends the
   # X-CSRF-Token header (read from csrf_meta_tags). No null_session needed.
 
+  # Rails' built-in controller error handling: any unexpected error from a GraphQL
+  # request is routed here (keeps `execute` to the happy path).
+  rescue_from StandardError, with: :render_unexpected_error
+
   def execute
     result = JgiveHomeAssigmentSchema.execute(
       params[:query],
@@ -12,8 +16,6 @@ class GraphqlController < ApplicationController
       context: {}
     )
     render json: result
-  rescue StandardError => e
-    render_unexpected_error(e)
   end
 
   private
