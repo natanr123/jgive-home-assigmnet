@@ -1,0 +1,142 @@
+[
+  {
+    "name": null,
+    "amount_cents": 36000,
+    "recurring": false,
+    "comment": "",
+    "amount_hidden": false
+  },
+  {
+    "name": "נילי שאשא",
+    "amount_cents": 5000,
+    "recurring": false,
+    "comment": "לעולם לא נשכח ולא נסלח.",
+    "amount_hidden": false
+  },
+  {
+    "name": "רחל ביבי",
+    "amount_cents": 18000,
+    "recurring": false,
+    "comment": "",
+    "amount_hidden": false
+  },
+  {
+    "name": "יאיר קרסו",
+    "amount_cents": 23000,
+    "recurring": false,
+    "comment": "",
+    "amount_hidden": false
+  },
+  {
+    "name": "דניאל  אנדרמן",
+    "amount_cents": null,
+    "recurring": false,
+    "comment": "",
+    "amount_hidden": true
+  },
+  {
+    "name": "ניר ברדוגו",
+    "amount_cents": 18000,
+    "recurring": false,
+    "comment": "",
+    "amount_hidden": false
+  },
+  {
+    "name": null,
+    "amount_cents": 18000,
+    "recurring": false,
+    "comment": "",
+    "amount_hidden": false
+  },
+  {
+    "name": "Einat Maor",
+    "amount_cents": null,
+    "recurring": false,
+    "comment": "",
+    "amount_hidden": true
+  },
+  {
+    "name": null,
+    "amount_cents": 18000,
+    "recurring": false,
+    "comment": "",
+    "amount_hidden": false
+  },
+  {
+    "name": "עפר דור",
+    "amount_cents": null,
+    "recurring": false,
+    "comment": "",
+    "amount_hidden": true
+  },
+  {
+    "name": "אריאל ואמה  עיני ",
+    "amount_cents": null,
+    "recurring": false,
+    "comment": "",
+    "amount_hidden": true
+  },
+  {
+    "name": null,
+    "amount_cents": 18000,
+    "recurring": false,
+    "comment": "",
+    "amount_hidden": false
+  },
+  {
+    "name": "ענת לב",
+    "amount_cents": 18000,
+    "recurring": false,
+    "comment": "",
+    "amount_hidden": false
+  },
+  {
+    "name": "שרון ולדניגר",
+    "amount_cents": 10000,
+    "recurring": false,
+    "comment": "",
+    "amount_hidden": false
+  },
+  {
+    "name": "נועה לוי",
+    "amount_cents": 50000,
+    "recurring": false,
+    "comment": "",
+    "amount_hidden": false
+  },
+  {
+    "name": "עופרה גרוסמן",
+    "amount_cents": 10000,
+    "recurring": false,
+    "comment": "",
+    "amount_hidden": false
+  },
+  {
+    "name": "Noga Chipman",
+    "amount_cents": null,
+    "recurring": false,
+    "comment": "תרומה לכבוד יום הולדתה השמונים של אראלה שטינורץ. אראלה בקשה מכל חבריה ומשפחתה לתרום לגן הכתום לזכרם של כפיר, אריאל ושירי ביבס. ",
+    "amount_hidden": true
+  },
+  {
+    "name": "נועה ויינברגר",
+    "amount_cents": 18000,
+    "recurring": false,
+    "comment": "",
+    "amount_hidden": false
+  },
+  {
+    "name": "טלי גפני",
+    "amount_cents": null,
+    "recurring": false,
+    "comment": "נראה פרויקט מדהים, בהצלחה רבה. \nיהי זכרם של כל הנרצחים ברוך🥀\n השם ייקום דמם. ",
+    "amount_hidden": true
+  },
+  {
+    "name": "יואב קוצר",
+    "amount_cents": null,
+    "recurring": false,
+    "comment": "",
+    "amount_hidden": true
+  }
+]
