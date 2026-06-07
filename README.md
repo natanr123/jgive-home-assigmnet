@@ -16,7 +16,7 @@ not shipped. RTL Hebrew throughout.
 
 ## Run it locally
 
-**Prerequisites:** Ruby 3.2.2, Node 20+, Docker (for Postgres).
+**Prerequisites:** Ruby 3.4.7, Node 20+, Docker (for Postgres).
 
 ```bash
 cp .env.example .env          # local DB credentials (consumed by compose AND Rails)

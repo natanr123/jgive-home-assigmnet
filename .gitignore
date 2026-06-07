@@ -48,3 +48,6 @@
 # Playwright E2E test output (added in step 8)
 /test-results
 /playwright-report
+
+# Claude Code local settings
+/.claude
