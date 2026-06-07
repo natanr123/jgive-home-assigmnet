@@ -20,16 +20,19 @@ class GraphqlController < ApplicationController
 
   private
 
-  # Unexpected (non-GraphQL) errors: log them and return a clean JSON 500. The real
-  # message + backtrace are exposed only in development; production returns a generic
-  # message so internals never leak. (GraphQL validation/resolver errors are handled by
-  # graphql-ruby itself and come back in the response `errors` array, not here.)
+  # Unexpected (non-GraphQL) errors: log them and return a clean JSON 500. Internals
+  # (real message + backtrace) are exposed only where Rails already shows detailed
+  # errors — i.e. `consider_all_requests_local` (dev/test), never in production — so we
+  # follow the framework's own intent rather than hardcoding an env name. (GraphQL
+  # validation/resolver errors are handled by graphql-ruby and come back in the response
+  # `errors` array, not here.)
   def render_unexpected_error(error)
     logger.error("[GraphQL] #{error.class}: #{error.message}")
     logger.error(error.backtrace.join("\n")) if error.backtrace
 
-    payload = { message: Rails.env.development? ? error.message : "Internal server error" }
-    payload[:backtrace] = error.backtrace if Rails.env.development?
+    expose_details = Rails.application.config.consider_all_requests_local
+    payload = { message: expose_details ? error.message : "Internal server error" }
+    payload[:backtrace] = error.backtrace if expose_details
     render json: { data: nil, errors: [ payload ] }, status: :internal_server_error
   end
 

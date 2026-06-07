@@ -120,17 +120,32 @@ RSpec.describe "POST /graphql", type: :request do
   end
 
   describe "unexpected server errors" do
-    it "returns a clean JSON 500 without re-raising or leaking internals" do
+    before do
       allow(JgiveHomeAssigmentSchema).to receive(:execute).and_raise(StandardError, "secret internal detail")
+    end
 
+    def post_graphql
       post "/graphql", params: { query: "{ __typename }" }.to_json,
                        headers: { "CONTENT_TYPE" => "application/json" }
+    end
 
+    it "returns a clean JSON 500 without re-raising" do
+      post_graphql
       expect(response).to have_http_status(:internal_server_error)
-      body = JSON.parse(response.body)
-      expect(body["data"]).to be_nil
-      expect(body["errors"].first["message"]).to eq("Internal server error")
+      expect(JSON.parse(response.body)["data"]).to be_nil
+    end
+
+    it "hides internals in production (consider_all_requests_local = false)" do
+      allow(Rails.application.config).to receive(:consider_all_requests_local).and_return(false)
+      post_graphql
+      expect(JSON.parse(response.body)["errors"].first["message"]).to eq("Internal server error")
       expect(response.body).not_to include("secret internal detail")
+    end
+
+    it "exposes details where Rails shows detailed errors (dev/test)" do
+      allow(Rails.application.config).to receive(:consider_all_requests_local).and_return(true)
+      post_graphql
+      expect(JSON.parse(response.body)["errors"].first["message"]).to include("secret internal detail")
     end
   end
 end
