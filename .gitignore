@@ -40,6 +40,9 @@
 
 /node_modules
 
+# JetBrains IDE project files
+/.idea
+
 # Playwright MCP scratch snapshots (research artifacts; curated copies live under docs/)
 /.playwright-mcp
 # Playwright E2E test output (added in step 8)
