@@ -1,0 +1,33 @@
+.count {
+  color: var(--muted);
+  margin: 0 0 1rem;
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+}
+
+@media (min-width: 640px) {
+  .list {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.loadMore {
+  margin-top: 1.25rem;
+  padding: 0.6rem 1.5rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--bg);
+  color: var(--ink);
+  font-size: 0.95rem;
+}
+
+.loadMore:disabled {
+  opacity: 0.5;
+}
