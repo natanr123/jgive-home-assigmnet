@@ -19,7 +19,7 @@ export const RECENT_DONATIONS_QUERY = `
 export const CAMPAIGN_EDIT_QUERY = `
   query CampaignEdit($id: ID!) {
     campaign(id: $id) {
-      id name subtitle storyHtmlRaw goalAmountCents currency coverImageUrl
+      id name subtitle storyHtmlRaw goalAmountCents currency coverImageUrl storyImageUrls
       presetAmounts { amountCents label }
       charityOrganization { id name email phoneNumber websiteUrl charityNumber aboutRaw avatarUrl }
     }

@@ -28,6 +28,7 @@ export interface Campaign {
   subtitle?: string | null;
   storyHtml?: string | null;
   storyHtmlRaw?: string | null;
+  storyImageUrls?: string[];
   coverImageUrl?: string | null;
   goalAmountCents: number;
   currency: string;

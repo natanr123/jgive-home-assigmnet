@@ -187,6 +187,25 @@ RSpec.describe "POST /graphql", type: :request do
       expect(org.reload.avatar).to be_attached
       expect(body["campaign"]["coverImageUrl"]).to match(%r{\A/rails/active_storage/})
     end
+
+    it "appends an uploaded story image and resolves both tokens" do
+      img_dir = Rails.root.join("db/seeds/data/images")
+      campaign.story_images.attach(io: File.open(img_dir.join("story/1.jpg")), filename: "1.jpg", content_type: "image/jpeg")
+      campaign.update!(story_html: '<figure><img src="campaigns/story/1.jpg"></figure>')
+      new_blob = ActiveStorage::Blob.create_and_upload!(io: File.open(img_dir.join("story/2.jpg")), filename: "2.jpg", content_type: "image/jpeg")
+
+      input = {
+        id: campaign.id,
+        storyHtml: '<figure><img src="campaigns/story/1.jpg"></figure><figure><img src="campaigns/story/2.jpg"></figure>',
+        storyImageSignedIds: [ new_blob.signed_id ]
+      }
+      m = %(mutation($i: UpdateCampaignInput!){ updateCampaign(input:$i){ campaign{ storyHtml } errors } })
+      body = gql(m, { i: input })["data"]["updateCampaign"]
+
+      expect(body["errors"]).to be_empty
+      expect(campaign.reload.story_images.count).to eq(2)
+      expect(body["campaign"]["storyHtml"].scan(%r{/rails/active_storage/blobs}).size).to eq(2)
+    end
   end
 
   describe "introspection" do

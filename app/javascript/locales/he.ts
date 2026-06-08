@@ -79,6 +79,7 @@ export const he = {
   imagesHeading: "תמונות",
   bannerLabel: "תמונת באנר",
   avatarLabel: "לוגו עמותה",
+  storyImagesLabel: "תמונות בסיפור (הוספה)",
   uploading: "מעלה…",
   orgHeading: "פרטי העמותה",
   fieldOrgName: "שם העמותה",

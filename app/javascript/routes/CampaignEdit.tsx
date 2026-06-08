@@ -43,6 +43,13 @@ interface PresetRow {
   label: string;
 }
 
+// Story images are referenced in the HTML by positional token (campaigns/story/N.jpg)
+// and resolved to the Nth attached blob. A newly-added image gets the next index.
+function nextStoryIndex(html: string): number {
+  const nums = [...html.matchAll(/campaigns\/story\/(\d+)\.jpg/g)].map((m) => Number(m[1]));
+  return (nums.length ? Math.max(...nums) : 0) + 1;
+}
+
 export default function CampaignEdit() {
   const campaign = useLoaderData() as Campaign;
   const submit = useSubmit();
@@ -70,6 +77,8 @@ export default function CampaignEdit() {
   const [bannerSignedId, setBannerSignedId] = useState<string | null>(null);
   const [avatarPreview, setAvatarPreview] = useState(org.avatarUrl ?? "");
   const [avatarSignedId, setAvatarSignedId] = useState<string | null>(null);
+  const [storyThumbs, setStoryThumbs] = useState<string[]>(campaign.storyImageUrls ?? []);
+  const [storyImageSignedIds, setStoryImageSignedIds] = useState<string[]>([]);
   const [uploadError, setUploadError] = useState<string | null>(null);
 
   const saving = navigation.state !== "idle";
@@ -95,6 +104,27 @@ export default function CampaignEdit() {
       if (file) handleUpload(file, setPreview, setSignedId);
     };
 
+  async function onAddStoryImages(files: FileList) {
+    setUploadError(null);
+    let html = story;
+    const ids: string[] = [];
+    const thumbs: string[] = [];
+    for (const file of Array.from(files)) {
+      try {
+        const sid = await directUpload(file);
+        const idx = nextStoryIndex(html);
+        html += `\n<figure><img src="campaigns/story/${idx}.jpg"></figure>`;
+        ids.push(sid);
+        thumbs.push(URL.createObjectURL(file));
+      } catch {
+        setUploadError("ההעלאה נכשלה, נסו שוב");
+      }
+    }
+    setStory(html);
+    setStoryImageSignedIds((prev) => [...prev, ...ids]);
+    setStoryThumbs((prev) => [...prev, ...thumbs]);
+  }
+
   function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     const payload = {
@@ -116,6 +146,7 @@ export default function CampaignEdit() {
       },
       ...(bannerSignedId ? { bannerSignedId } : {}),
       ...(avatarSignedId ? { avatarSignedId } : {}),
+      ...(storyImageSignedIds.length ? { storyImageSignedIds } : {}),
     };
     submit({ payload: JSON.stringify(payload) }, { method: "post" });
   }
@@ -180,6 +211,23 @@ export default function CampaignEdit() {
               {avatarPreview && <img className={styles.avatarPreview} src={avatarPreview} alt="" />}
               <input type="file" accept="image/*" onChange={onPickFile(setAvatarPreview, setAvatarSignedId)} />
             </div>
+          </div>
+
+          <div className={styles.upload}>
+            <span className={styles.uploadLabel}>{he.storyImagesLabel}</span>
+            {storyThumbs.length > 0 && (
+              <div className={styles.storyThumbs}>
+                {storyThumbs.map((u, i) => (
+                  <img key={i} className={styles.storyThumb} src={u} alt="" />
+                ))}
+              </div>
+            )}
+            <input
+              type="file"
+              accept="image/*"
+              multiple
+              onChange={(e) => e.target.files && onAddStoryImages(e.target.files)}
+            />
           </div>
         </fieldset>
 

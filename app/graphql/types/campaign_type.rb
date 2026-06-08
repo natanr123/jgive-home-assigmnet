@@ -13,6 +13,9 @@ module Types
     field :preset_amounts, [ Types::PresetAmountType ], null: false
     field :stats, Types::StatsType, null: false
     field :charity_organization, Types::CharityOrganizationType, null: false
+    field :story_image_urls, [ String ], null: false, description: "Current story image URLs (for the editor)"
+
+    def story_image_urls = object.story_images.map { |img| AttachmentUrl.call(img) }.compact
 
     # Story images are Active Storage attachments referenced in the stored HTML by a
     # stable token (campaigns/story/N.jpg). Rewrite each token to its attached blob's

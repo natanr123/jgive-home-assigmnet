@@ -16,12 +16,15 @@ module Mutations
     # Active Storage direct-upload signed ids (from /rails/active_storage/direct_uploads).
     argument :banner_signed_id, String, required: false
     argument :avatar_signed_id, String, required: false
+    # New story images to append (the client also appends matching campaigns/story/N.jpg
+    # tokens to story_html, which the read resolver maps to these blobs by order).
+    argument :story_image_signed_ids, [ String ], required: false
 
     field :campaign, Types::CampaignType
     field :errors, [ String ], null: false
 
     def resolve(id:, charity_organization: nil, preset_amounts: nil,
-                banner_signed_id: nil, avatar_signed_id: nil, **attrs)
+                banner_signed_id: nil, avatar_signed_id: nil, story_image_signed_ids: nil, **attrs)
       campaign = Campaign.find_by(id: id)
       return { campaign: nil, errors: [ "Campaign not found" ] } unless campaign
 
@@ -33,6 +36,7 @@ module Mutations
       ActiveRecord::Base.transaction do
         campaign.update!(attrs)
         campaign.banner.attach(banner_signed_id) if banner_signed_id.present?
+        Array(story_image_signed_ids).each { |sid| campaign.story_images.attach(sid) }
 
         org = campaign.charity_organization
         org.update!(charity_organization.to_h.compact) if charity_organization

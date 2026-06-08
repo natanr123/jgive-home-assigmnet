@@ -140,6 +140,20 @@
   border: 1px solid var(--line);
 }
 
+.storyThumbs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.storyThumb {
+  width: 84px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid var(--line);
+}
+
 .uploadError {
   color: #b00020;
   font-size: 0.85rem;
