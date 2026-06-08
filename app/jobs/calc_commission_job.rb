@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 
-# Calculates the platform commission for a donation (10% of the amount) on a
-# background Sidekiq worker, enqueued whenever a donation is created.
-class CalcCommission
-  include Sidekiq::Job
+# Calculates the platform commission for a donation (10% of the amount), enqueued
+# whenever a donation is created. An Active Job — runs on the Sidekiq adapter
+# (config.active_job.queue_adapter = :sidekiq).
+class CalcCommissionJob < ApplicationJob
+  queue_as :default
 
   COMMISSION_RATE = 0.10
 

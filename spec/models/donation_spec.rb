@@ -68,8 +68,8 @@ RSpec.describe Donation, type: :model do
   end
 
   describe "commission", :commit do
-    it "enqueues CalcCommission after a donation is created" do
-      expect { create(:donation) }.to change(CalcCommission.jobs, :size).by(1)
+    it "enqueues CalcCommissionJob after a donation is created" do
+      expect { create(:donation) }.to have_enqueued_job(CalcCommissionJob)
     end
   end
 end
