@@ -168,6 +168,25 @@ RSpec.describe "POST /graphql", type: :request do
       body = gql(mutation, { i: { id: "999999", subtitle: "x" } })["data"]["updateCampaign"]
       expect(body["errors"]).to include("Campaign not found")
     end
+
+    it "attaches an uploaded banner + avatar via direct-upload signed ids" do
+      img_dir = Rails.root.join("db/seeds/data/images")
+      banner_blob = ActiveStorage::Blob.create_and_upload!(
+        io: File.open(img_dir.join("banner.jpg")), filename: "b.jpg", content_type: "image/jpeg"
+      )
+      avatar_blob = ActiveStorage::Blob.create_and_upload!(
+        io: File.open(img_dir.join("avatar.png")), filename: "a.png", content_type: "image/png"
+      )
+
+      input = { id: campaign.id, bannerSignedId: banner_blob.signed_id, avatarSignedId: avatar_blob.signed_id }
+      m = %(mutation($i: UpdateCampaignInput!){ updateCampaign(input:$i){ campaign{ coverImageUrl charityOrganization{ avatarUrl } } errors } })
+      body = gql(m, { i: input })["data"]["updateCampaign"]
+
+      expect(body["errors"]).to be_empty
+      expect(campaign.reload.banner).to be_attached
+      expect(org.reload.avatar).to be_attached
+      expect(body["campaign"]["coverImageUrl"]).to match(%r{\A/rails/active_storage/})
+    end
   end
 
   describe "introspection" do

@@ -107,6 +107,51 @@
   color: var(--brand-magenta);
 }
 
+.uploads {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.upload {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.uploadLabel {
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.bannerPreview {
+  width: 100%;
+  aspect-ratio: 16 / 5;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+}
+
+.avatarPreview {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--line);
+}
+
+.uploadError {
+  color: #b00020;
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+@media (max-width: 560px) {
+  .uploads {
+    grid-template-columns: 1fr;
+  }
+}
+
 .errors {
   margin: 0;
   padding: 0.75rem 1.4rem;

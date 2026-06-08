@@ -13,11 +13,15 @@ module Mutations
     argument :currency, String, required: false
     argument :preset_amounts, [ Types::PresetAmountInput ], required: false
     argument :charity_organization, Types::CharityOrganizationInput, required: false
+    # Active Storage direct-upload signed ids (from /rails/active_storage/direct_uploads).
+    argument :banner_signed_id, String, required: false
+    argument :avatar_signed_id, String, required: false
 
     field :campaign, Types::CampaignType
     field :errors, [ String ], null: false
 
-    def resolve(id:, charity_organization: nil, preset_amounts: nil, **attrs)
+    def resolve(id:, charity_organization: nil, preset_amounts: nil,
+                banner_signed_id: nil, avatar_signed_id: nil, **attrs)
       campaign = Campaign.find_by(id: id)
       return { campaign: nil, errors: [ "Campaign not found" ] } unless campaign
 
@@ -28,7 +32,11 @@ module Mutations
 
       ActiveRecord::Base.transaction do
         campaign.update!(attrs)
-        campaign.charity_organization.update!(charity_organization.to_h.compact) if charity_organization
+        campaign.banner.attach(banner_signed_id) if banner_signed_id.present?
+
+        org = campaign.charity_organization
+        org.update!(charity_organization.to_h.compact) if charity_organization
+        org.avatar.attach(avatar_signed_id) if avatar_signed_id.present?
       end
 
       { campaign: campaign, errors: [] }

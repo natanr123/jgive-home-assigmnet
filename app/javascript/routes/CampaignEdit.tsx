@@ -10,6 +10,7 @@ import {
   type LoaderFunctionArgs,
 } from "react-router";
 import { gql } from "../lib/gql";
+import { directUpload } from "../lib/directUpload";
 import { CAMPAIGN_EDIT_QUERY, UPDATE_CAMPAIGN_MUTATION } from "../lib/queries";
 import type { Campaign } from "../lib/types";
 import { he } from "../locales/he";
@@ -64,7 +65,35 @@ export default function CampaignEdit() {
   const [charityNumber, setCharityNumber] = useState(org.charityNumber ?? "");
   const [about, setAbout] = useState(org.aboutRaw ?? "");
 
+  // Image uploads (Active Storage direct upload → signed_id passed to the mutation).
+  const [bannerPreview, setBannerPreview] = useState(campaign.coverImageUrl ?? "");
+  const [bannerSignedId, setBannerSignedId] = useState<string | null>(null);
+  const [avatarPreview, setAvatarPreview] = useState(org.avatarUrl ?? "");
+  const [avatarSignedId, setAvatarSignedId] = useState<string | null>(null);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+
   const saving = navigation.state !== "idle";
+
+  async function handleUpload(
+    file: File,
+    setPreview: (url: string) => void,
+    setSignedId: (id: string) => void
+  ) {
+    setUploadError(null);
+    setPreview(URL.createObjectURL(file)); // optimistic local preview
+    try {
+      setSignedId(await directUpload(file));
+    } catch {
+      setUploadError("ההעלאה נכשלה, נסו שוב");
+    }
+  }
+
+  const onPickFile =
+    (setPreview: (u: string) => void, setSignedId: (id: string) => void) =>
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (file) handleUpload(file, setPreview, setSignedId);
+    };
 
   function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -85,6 +114,8 @@ export default function CampaignEdit() {
         charityNumber,
         about,
       },
+      ...(bannerSignedId ? { bannerSignedId } : {}),
+      ...(avatarSignedId ? { avatarSignedId } : {}),
     };
     submit({ payload: JSON.stringify(payload) }, { method: "post" });
   }
@@ -134,6 +165,23 @@ export default function CampaignEdit() {
           <span>{he.fieldStory}</span>
           <textarea className={styles.code} rows={10} value={story} onChange={(e) => setStory(e.target.value)} />
         </label>
+
+        <fieldset className={styles.fieldset}>
+          <legend>{he.imagesHeading}</legend>
+          {uploadError && <p className={styles.uploadError}>{uploadError}</p>}
+          <div className={styles.uploads}>
+            <div className={styles.upload}>
+              <span className={styles.uploadLabel}>{he.bannerLabel}</span>
+              {bannerPreview && <img className={styles.bannerPreview} src={bannerPreview} alt="" />}
+              <input type="file" accept="image/*" onChange={onPickFile(setBannerPreview, setBannerSignedId)} />
+            </div>
+            <div className={styles.upload}>
+              <span className={styles.uploadLabel}>{he.avatarLabel}</span>
+              {avatarPreview && <img className={styles.avatarPreview} src={avatarPreview} alt="" />}
+              <input type="file" accept="image/*" onChange={onPickFile(setAvatarPreview, setAvatarSignedId)} />
+            </div>
+          </div>
+        </fieldset>
 
         <fieldset className={styles.fieldset}>
           <legend>{he.presetsHeading}</legend>
