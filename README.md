@@ -169,9 +169,14 @@ Out of scope per the brief — submitting only creates a `pending` donation. Her
 take it to `paid`. I'll use **Stripe** for concreteness, but keep it behind a
 provider-agnostic seam so the backend isn't Stripe-specific.
 
-- [ ] **Provider port.** A `PaymentProvider` interface (`create_intent`, `verify_webhook`)
-  with a `StripeProvider` adapter, so nothing outside the adapter depends on Stripe and a
-  second method (e.g. Israeli **bit** via PayMe, which JGive also uses) can be added later.
+- [ ] **Provider port.** A `Payments::Provider` interface (`create_intent`,
+  `verify_webhook`) with a `Payments::StripeProvider` adapter, so nothing outside the
+  adapter depends on Stripe and a second method (e.g. Israeli **bit** via PayMe, which
+  JGive also uses) can be added later. **Where it lives:** `app/services/payments/`
+  (`provider.rb`, `stripe_provider.rb`, `handle_webhook.rb` → the `Payments::` namespace;
+  `app/services` is the Zeitwerk root) + a thin `StripeWebhooksController`. The GraphQL
+  mutation and the webhook controller talk to `Payments::Provider`, never to Stripe
+  directly.
 
 - [ ] **Start payment on submit (outbound, with an idempotency key).** `createDonation`
   still creates the `pending` donation, then creates a **PaymentIntent** for its
