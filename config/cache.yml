@@ -11,6 +11,7 @@ development:
 test:
   <<: *default
 
+# No separate cache database in production (see config/database.yml). Production uses
+# :memory_store (config/environments/production.rb), so Solid Cache is not connected.
 production:
-  database: cache
   <<: *default

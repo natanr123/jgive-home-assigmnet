@@ -64,21 +64,12 @@ test:
 # Read https://guides.rubyonrails.org/configuring.html#configuring-a-database
 # for a full overview on how database connection configuration can be specified.
 #
+# Single database in production — DATABASE_URL (set by the PaaS) is merged on top.
+# The Rails 8 scaffold's separate cache/queue/cable databases are dropped: the queue
+# runs on Sidekiq/Redis, and cache/cable use process-local adapters (see production.rb /
+# cable.yml). One managed Postgres + one Redis is all the deploy needs.
 production:
-  primary: &primary_production
-    <<: *default
-    database: jgive_home_assigment_production
-    username: jgive_home_assigment
-    password: <%= ENV["JGIVE_HOME_ASSIGMENT_DATABASE_PASSWORD"] %>
-  cache:
-    <<: *primary_production
-    database: jgive_home_assigment_production_cache
-    migrations_paths: db/cache_migrate
-  queue:
-    <<: *primary_production
-    database: jgive_home_assigment_production_queue
-    migrations_paths: db/queue_migrate
-  cable:
-    <<: *primary_production
-    database: jgive_home_assigment_production_cable
-    migrations_paths: db/cable_migrate
+  <<: *default
+  database: jgive_home_assigment_production
+  username: jgive_home_assigment
+  password: <%= ENV["JGIVE_HOME_ASSIGMENT_DATABASE_PASSWORD"] %>

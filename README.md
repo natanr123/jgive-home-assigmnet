@@ -258,12 +258,38 @@ search/sort (load-more only), עיגול לטובה, video hero, heart counts. S
 
 ## Deployment
 
-Mandatory per the brief, deferred at the reviewer's request until local was solid. The app
-is deploy-ready: production `Dockerfile` + Kamal config are retained; assets precompile via
-esbuild + propshaft. Before submission: pick a platform (Heroku-like PaaS mirrors JGive's
-real hosting; the Kamal/Dockerfile path fits any container host), provision Postgres,
-set `RAILS_MASTER_KEY`/`DATABASE_URL`, and decide the Solid Queue/Cache/Cable adapters.
-See `tmp/plans/step-10.md` for the checklist.
+Target platform: **Railway** (managed Postgres + Redis + a separate Sidekiq worker, warm
+instances so the demo link responds immediately). The app deploys from the production
+`Dockerfile`; assets precompile via esbuild + propshaft. Production runs jobs on
+**Sidekiq/Redis** (matching dev) and stores uploads on **Google Cloud Storage**.
+
+**Two services from this repo:**
+- **web** — default Dockerfile CMD (Thruster/Puma); healthcheck path `/up`.
+- **worker** — start command `bundle exec sidekiq` (no healthcheck).
+
+**Provision in the Railway project:** Postgres, and Redis with **`maxmemory-policy noeviction`**
+(Sidekiq requirement — eviction silently drops jobs).
+
+**Environment variables** (set on *both* services):
+
+| Var | Value |
+|---|---|
+| `RAILS_MASTER_KEY` | contents of `config/master.key` |
+| `DATABASE_URL` | `${{Postgres.DATABASE_URL}}` |
+| `REDIS_URL` | `${{Redis.REDIS_URL}}` |
+| `GCS_PROJECT` | `npcisland` |
+| `GCS_BUCKET` | `npcisland-jgive-storage` |
+| `GCS_KEYFILE_JSON` | the service-account key JSON (one line) |
+| `SIDEKIQ_USER` / `SIDEKIQ_PASSWORD` | credentials that gate the `/sidekiq` dashboard |
+
+Active Storage → GCS is wired in `config/storage.yml` (`:google`) and
+`config/initializers/gcs_credentials.rb`, which materialises `GCS_KEYFILE_JSON` into a
+keyfile for Application Default Credentials. Migrations run via Railway's pre-deploy
+command (`bin/rails db:prepare`, in `railway.toml`).
+
+**Alternatives:** the retained `Dockerfile` + **Kamal** config deploy to any container host
+/ VPS; a Heroku-like PaaS mirrors JGive's real hosting. Solid Queue/Cache/Cable remain
+available as a Redis-free fallback (swap the adapters in `config/environments/production.rb`).
 
 ---
 

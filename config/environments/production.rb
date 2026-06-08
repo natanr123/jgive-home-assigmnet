@@ -21,8 +21,9 @@ Rails.application.configure do
   # Enable serving of images, stylesheets, and JavaScripts from an asset server.
   # config.asset_host = "http://assets.example.com"
 
-  # Store uploaded files on the local file system (see config/storage.yml for options).
-  config.active_storage.service = :local
+  # Store uploaded files on Google Cloud Storage (see config/storage.yml + the
+  # gcs_credentials initializer). PaaS disks are ephemeral, so :local would lose blobs.
+  config.active_storage.service = :google
 
   # Assume all access to the app is happening through a SSL-terminating reverse proxy.
   # config.assume_ssl = true
@@ -46,12 +47,14 @@ Rails.application.configure do
   # Don't log any deprecations.
   config.active_support.report_deprecations = false
 
-  # Replace the default in-process memory cache store with a durable alternative.
-  config.cache_store = :solid_cache_store
+  # Process-local cache. This app caches negligibly and runs a single web instance for
+  # the demo, so memory_store avoids a second datastore. Swap to :redis_cache_store
+  # (REDIS_URL) or :solid_cache_store (on the primary DB) to share a cache across instances.
+  config.cache_store = :memory_store
 
-  # Replace the default in-process and non-durable queuing backend for Active Job.
-  config.active_job.queue_adapter = :solid_queue
-  config.solid_queue.connects_to = { database: { writing: :queue } }
+  # Background jobs run on Sidekiq (Redis-backed), matching development. A separate
+  # Sidekiq worker process drains the queue; set REDIS_URL in the environment.
+  config.active_job.queue_adapter = :sidekiq
 
   # Ignore bad email addresses and do not raise email delivery errors.
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.
