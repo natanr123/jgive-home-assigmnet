@@ -1,12 +1,18 @@
+/* Full-bleed banner: rendered outside the constrained container, so width:100%
+   spans the viewport. Natural aspect ratio (~3.7:1), no cropping. */
+.heroImg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Fallback for campaigns without a cover banner (e.g. the synthetic campaign 2). */
 .hero {
   position: relative;
   width: 100%;
-  aspect-ratio: 16 / 7;
-  max-height: 420px;
+  height: clamp(220px, 28vw, 440px);
   background-size: cover;
   background-position: center;
-  border-radius: var(--radius);
-  overflow: hidden;
 }
 
 .fallback {

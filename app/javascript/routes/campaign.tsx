@@ -36,24 +36,28 @@ export default function CampaignPage() {
   ];
 
   return (
-    <main className={styles.shell}>
+    <main>
+      {/* Hero is full-bleed: rendered outside the constrained container. */}
       <Hero campaign={campaign} />
-      <ProgressBar stats={campaign.stats} />
 
-      <div className={styles.layout}>
-        <div className={styles.sidebar}>
-          <CtaBlock campaign={campaign} />
+      <div className={styles.shell}>
+        <ProgressBar stats={campaign.stats} />
+
+        <div className={styles.layout}>
+          <div className={styles.sidebar}>
+            <CtaBlock campaign={campaign} />
+          </div>
+
+          <div>
+            <h1 className={styles.headline}>{campaign.name}</h1>
+            {campaign.subtitle && <p className={styles.subtitle}>{campaign.subtitle}</p>}
+            <Tabs tabs={tabs} />
+          </div>
         </div>
 
-        <div>
-          <h2 className={styles.headline}>{campaign.name}</h2>
-          {campaign.subtitle && <p className={styles.subtitle}>{campaign.subtitle}</p>}
-          <Tabs tabs={tabs} />
-        </div>
+        {/* Donate modal (nested routes) mounts here. */}
+        <Outlet context={campaign} />
       </div>
-
-      {/* Donate modal (nested routes) mounts here — step 6. */}
-      <Outlet context={campaign} />
     </main>
   );
 }

@@ -27,7 +27,7 @@ orange_garden = Campaign.find_or_create_by!(name: "הגן הכתום") do |c|
   c.story_html        = story_html
   c.goal_amount_cents = 5_000_000_00
   c.currency          = "ILS"
-  c.cover_image_path  = "campaigns/orange-garden-cover.jpg"
+  c.cover_image_path  = "campaigns/orange-garden-hero.jpg"
   c.preset_amounts    = [
     { "amount_cents" => 18_000,  "label" => "נטיעת עץ" },
     { "amount_cents" => 36_000,  "label" => "נטיעת 2 עצים 🧡 הכי נבחר" },
