@@ -19,15 +19,30 @@ not shipped. RTL Hebrew throughout.
 **Prerequisites:** Ruby 3.4.7, Node 20+, Docker (for Postgres + Redis).
 
 ```bash
-cp .env.example .env          # local DB credentials (consumed by compose AND Rails)
-docker compose up -d          # Postgres 17 on localhost:5432 (healthchecked)
+cp .env.example .env          # local DB + Redis config (consumed by compose AND Rails)
+docker compose up -d          # Postgres 17 (:5432) + Redis 7 (:6379), healthchecked
 bin/setup                     # bundle + npm install + build + db:prepare + db:seed, then bin/dev
 ```
 
-`bin/setup` ends by launching `bin/dev` (Puma + esbuild `--watch`). Then open
-**http://localhost:3000** — `/` redirects to the seeded campaign.
+`bin/setup` ends by launching `bin/dev`, which runs **all three** processes from
+`Procfile.dev` — Puma (web), esbuild (`js`, `--watch`), and **Sidekiq (`worker`)**.
+Then open **http://localhost:3000** — `/` redirects to the seeded campaign.
 
 Already set up? Just `bin/dev`.
+
+### The background queue (Sidekiq)
+
+`bin/dev` already starts the Sidekiq worker, so the commission job runs automatically.
+To run (or restart) the worker on its own:
+
+```bash
+bundle exec sidekiq           # needs Redis up (docker compose up -d) and a .env
+```
+
+The Sidekiq dashboard — queues, processed/failed counts, retries — is at
+**http://localhost:3000/sidekiq** (unauthenticated; protect behind admin in production).
+Without a running worker, donations are still created and jobs just sit in Redis until a
+worker drains them.
 
 ### Tests
 
