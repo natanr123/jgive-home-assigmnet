@@ -50,7 +50,7 @@ brief (built anyway).
 | FR-18 | **Edit page** (`/campaigns/:id/edit`) to update campaign + charity content. | ➕ |
 | FR-19 | **Image upload** (banner / avatar / story images) via Active Storage direct upload. | ➕ |
 | FR-20 | **Background job** on donation create: `CalcCommissionJob` sets `commission_cents` to 10% of the amount. | ➕ |
-| FR-21 | **Sidekiq dashboard** at `/sidekiq`. | ➕ (no auth — demo) |
+| FR-21 | **Sidekiq dashboard** at `/sidekiq` — intentionally open (no auth) for the demo; a real deploy would gate it behind admin. | ➕ |
 
 ### Out of scope (explicit in the brief)
 

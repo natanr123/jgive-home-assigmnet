@@ -25,8 +25,8 @@ Storage) — see [Deployment](#deployment).
 | Sidekiq dashboard | https://web-production-bdbd1.up.railway.app/sidekiq |
 | Source (GitHub) | https://github.com/natanr123/jgive-home-assigmnet |
 
-The **Sidekiq dashboard** is HTTP Basic-auth protected (user `admin`; the password is a
-Railway variable, also in the git-ignored `.env.railway`).
+The **Sidekiq dashboard** is open (unauthenticated) — it's a demo; a real deployment would
+gate it behind admin auth.
 
 ---
 
@@ -302,7 +302,6 @@ can't set a per-service start command):
 | `GCS_PROJECT` | `npcisland` |
 | `GCS_BUCKET` | `npcisland-jgive-storage` |
 | `GCS_KEYFILE_JSON` | the service-account key JSON (one line) |
-| `SIDEKIQ_USER` / `SIDEKIQ_PASSWORD` | credentials that gate the `/sidekiq` dashboard |
 
 Active Storage → GCS is wired in `config/storage.yml` (`:google`) and
 `config/initializers/gcs_credentials.rb`, which materialises `GCS_KEYFILE_JSON` into a
