@@ -1,5 +1,10 @@
 #!/usr/bin/env sh
 
+# Honor the project's .ruby-version (3.4.7). A shell-level RBENV_VERSION override
+# (e.g. injected by an IDE terminal) would otherwise win and run the wrong Ruby —
+# missing gems like sidekiq. Unsetting it lets rbenv fall back to .ruby-version.
+unset RBENV_VERSION
+
 if gem list --no-installed --exact --silent foreman; then
   echo "Installing foreman..."
   gem install foreman
