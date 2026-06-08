@@ -169,7 +169,7 @@ Out of scope per the brief — submitting only creates a `pending` donation. Her
 take it to `paid`. I'll use **Stripe** for concreteness, but keep it behind a
 provider-agnostic seam so the backend isn't Stripe-specific.
 
-- [ ] **Provider port.** A `Payments::Provider` interface (`create_intent`,
+- [ ] **Provider port.** A `Payments::Provider` (`create_intent`,
   `verify_webhook`) with a `Payments::StripeProvider` adapter, so nothing outside the
   adapter depends on Stripe and a second method (e.g. Israeli **bit** via PayMe, which
   JGive also uses) can be added later. **Where it lives:** `app/services/payments/`
