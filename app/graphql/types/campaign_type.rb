@@ -13,7 +13,18 @@ module Types
     field :stats, Types::StatsType, null: false
     field :charity_organization, Types::CharityOrganizationType, null: false
 
-    def story_html = HtmlSanitizer.call(object.story_html)
+    # Story images are committed assets referenced by a stable token
+    # (campaigns/story/N.jpg). Rewrite those to digested propshaft URLs at read
+    # time, then sanitize.
+    def story_html
+      html = object.story_html
+      return nil if html.blank?
+
+      resolved = html.gsub(/src="(campaigns\/[^"]+)"/) do
+        %(src="#{ActionController::Base.helpers.asset_path(Regexp.last_match(1))}")
+      end
+      HtmlSanitizer.call(resolved)
+    end
 
     # Resolve the committed asset to its propshaft (digested) URL. nil when the asset
     # is absent (e.g. the synthetic campaign 2) — the client falls back to a gradient.
