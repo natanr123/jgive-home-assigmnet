@@ -20,5 +20,5 @@ test("campaign page renders title, progress, goal and tabs", async ({ page }) =>
   await expect(tabs.nth(1)).toHaveText("תרומות אחרונות");
 
   // donate CTA
-  await expect(page.getByRole("link", { name: "לתרומה" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "לתרומה" }).first()).toBeVisible();
 });

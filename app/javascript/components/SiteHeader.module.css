@@ -1,0 +1,98 @@
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: #fff;
+  border-bottom: 1px solid var(--line);
+}
+
+.inner {
+  max-width: 1225px;
+  margin: 0 auto;
+  height: 64px;
+  padding: 0 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.right {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.logo {
+  font-size: 1.6rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  color: var(--ink);
+}
+
+.menu {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.menuItem,
+.textItem {
+  background: none;
+  border: none;
+  font: inherit;
+  font-size: 0.95rem;
+  color: var(--ink);
+  cursor: default;
+  padding: 0;
+}
+
+.left {
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+}
+
+.iconBtn {
+  background: none;
+  border: none;
+  font-size: 1rem;
+  cursor: default;
+}
+
+.caret {
+  font-size: 0.7rem;
+  color: var(--muted);
+}
+
+.donate {
+  background: var(--brand-magenta);
+  color: #fff;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.95rem;
+  padding: 0.45rem 1.6rem;
+  border-radius: 24px;
+}
+
+.donate:hover {
+  filter: brightness(0.95);
+}
+
+.login {
+  background: none;
+  border: none;
+  font: inherit;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #c300f4;
+  cursor: default;
+}
+
+/* On small screens, drop the secondary menu — keep logo + donate. */
+@media (max-width: 720px) {
+  .menu,
+  .textItem,
+  .iconBtn {
+    display: none;
+  }
+}

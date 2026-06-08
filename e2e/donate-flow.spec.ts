@@ -6,7 +6,7 @@ test("full donation flow creates a pending donation and updates progress", async
   const before = await donorCount(page);
 
   // open the modal (URL becomes /donate/amount)
-  await page.getByRole("link", { name: "לתרומה" }).click();
+  await page.getByRole("link", { name: "לתרומה" }).first().click();
   await expect(page).toHaveURL(/\/donate\/amount$/);
   await expect(page.locator("dialog[open]")).toBeVisible();
 

@@ -4,7 +4,7 @@ import { gotoFeaturedCampaign } from "./helpers";
 test("anonymous donation shows no name on the card", async ({ page }) => {
   await gotoFeaturedCampaign(page);
 
-  await page.getByRole("link", { name: "לתרומה" }).click();
+  await page.getByRole("link", { name: "לתרומה" }).first().click();
   await page.getByRole("button", { name: /נטיעת 3 עצים/ }).click(); // ₪720 preset
 
   // choose "רק סכום התרומה" (anonymous)

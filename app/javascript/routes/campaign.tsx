@@ -3,6 +3,8 @@ import { gql } from "../lib/gql";
 import { CAMPAIGN_QUERY } from "../lib/queries";
 import type { Campaign } from "../lib/types";
 import { he } from "../locales/he";
+import SiteHeader from "../components/SiteHeader";
+import SiteFooter from "../components/SiteFooter";
 import Hero from "../components/Hero";
 import ProgressBar from "../components/ProgressBar";
 import CtaBlock from "../components/CtaBlock";
@@ -36,28 +38,35 @@ export default function CampaignPage() {
   ];
 
   return (
-    <main>
-      {/* Hero is full-bleed: rendered outside the constrained container. */}
-      <Hero campaign={campaign} />
+    <>
+      <SiteHeader donateTo="donate/amount" />
 
-      <div className={styles.shell}>
-        <ProgressBar stats={campaign.stats} />
+      <main>
+        {/* Full-bleed hero */}
+        <Hero campaign={campaign} />
 
-        <div className={styles.layout}>
-          <div className={styles.sidebar}>
-            <CtaBlock campaign={campaign} />
-          </div>
+        <div className={styles.shell}>
+          <ProgressBar stats={campaign.stats} />
 
-          <div>
-            <h1 className={styles.headline}>{campaign.name}</h1>
-            {campaign.subtitle && <p className={styles.subtitle}>{campaign.subtitle}</p>}
-            <Tabs tabs={tabs} />
-          </div>
+          {/* Centered donate cluster + title, mirroring the original. */}
+          <section className={styles.ctaRow}>
+            <div className={styles.titleCol}>
+              <h1 className={styles.headline}>{campaign.name}</h1>
+              {campaign.subtitle && <p className={styles.subtitle}>{campaign.subtitle}</p>}
+            </div>
+            <div className={styles.ctaCol}>
+              <CtaBlock campaign={campaign} />
+            </div>
+          </section>
+
+          <Tabs tabs={tabs} />
+
+          {/* Donate modal (nested routes) mounts here. */}
+          <Outlet context={campaign} />
         </div>
+      </main>
 
-        {/* Donate modal (nested routes) mounts here. */}
-        <Outlet context={campaign} />
-      </div>
-    </main>
+      <SiteFooter />
+    </>
   );
 }
