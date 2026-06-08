@@ -112,6 +112,30 @@ RSpec.describe "POST /graphql", type: :request do
     end
   end
 
+  describe "Active Storage image URLs" do
+    let(:img_dir) { Rails.root.join("db/seeds/data/images") }
+
+    it "resolves banner, story images, and avatar to /rails/active_storage URLs" do
+      campaign.banner.attach(io: File.open(img_dir.join("banner.jpg")), filename: "banner.jpg", content_type: "image/jpeg")
+      campaign.story_images.attach(io: File.open(img_dir.join("story/1.jpg")), filename: "1.jpg", content_type: "image/jpeg")
+      campaign.update!(story_html: '<p>סיפור</p><figure><img src="campaigns/story/1.jpg"></figure>')
+      org.avatar.attach(io: File.open(img_dir.join("avatar.png")), filename: "avatar.png", content_type: "image/png")
+
+      q = %(query($id: ID!){ campaign(id:$id){ coverImageUrl storyHtml charityOrganization{ avatarUrl } } })
+      data = gql(q, { id: campaign.id })["data"]["campaign"]
+
+      expect(data["coverImageUrl"]).to match(%r{\A/rails/active_storage/blobs/redirect/})
+      expect(data["charityOrganization"]["avatarUrl"]).to match(%r{\A/rails/active_storage/blobs/redirect/})
+      expect(data["storyHtml"]).to match(%r{<img src="/rails/active_storage/blobs/redirect/})
+      expect(data["storyHtml"]).not_to include("campaigns/story/1.jpg") # token rewritten
+    end
+
+    it "returns nil coverImageUrl when no banner is attached" do
+      data = gql(%(query($id: ID!){ campaign(id:$id){ coverImageUrl } }), { id: campaign.id })["data"]["campaign"]
+      expect(data["coverImageUrl"]).to be_nil
+    end
+  end
+
   describe "updateCampaign mutation" do
     let(:mutation) do
       %(mutation($i: UpdateCampaignInput!){ updateCampaign(input:$i){ campaign{ name subtitle goalAmountCents presetAmounts{amountCents label} charityOrganization{ email } } errors } })

@@ -19,6 +19,7 @@ export interface CharityOrganization {
   charityNumber?: string | null;
   aboutHtml?: string | null;
   aboutRaw?: string | null;
+  avatarUrl?: string | null;
 }
 
 export interface Campaign {

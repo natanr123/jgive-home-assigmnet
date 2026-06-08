@@ -120,6 +120,13 @@ gem; server-side gems aren't observable from outside.)
 - **Realistic seeds without 3,170 rows:** `additional_amount_cents` /
   `additional_donors_count` (JGive's own "additional donations" idea) absorb the offline
   remainder so totals match the live page exactly.
+- **Images via Active Storage** (mirrors JGive): campaign `banner` + `story_images` and
+  charity `avatar` are attachments; GraphQL resolves them to relative
+  `/rails/active_storage/blobs/redirect/...` URLs (`only_path: true`, so no host config) —
+  the same URL shape JGive serves. Story HTML stores stable `campaigns/story/N.jpg` tokens
+  rewritten to blob URLs by attachment order at read time. Seeds attach committed source
+  images from `db/seeds/data/images/` (idempotently). No image variants (libvips isn't
+  installed here) — originals are served; variants are a drop-in upgrade.
 - **HTML sanitized at read time** (GraphQL resolver, allowlisted tags) so stored content
   stays raw and the allowlist can evolve without re-seeding.
 - **CSRF:** token model (`protect_from_forgery :exception` + `csrf_meta_tags`); `gqlFetch`
@@ -168,7 +175,9 @@ search/sort (load-more only), עיגול לטובה, video hero, heart counts. S
 - A Vitest/React Testing Library component layer (currently covered by request + E2E specs).
 - `GraphQL::Dataloader` if the schema grows; cursor pagination for donations.
 - The site's amount-hidden privacy mode; donations search/sort/filter.
-- An accessibility audit pass; image optimization / `srcset` for the hero.
+- An accessibility audit pass; Active Storage **variants** (resize/`srcset`) once libvips
+  is available, and **image upload** on the edit page (multipart) so cover/story images
+  are editable — matching JGive's upload-backed media; Action Text for the story.
 - SSR via Inertia or RR framework-mode (trade-offs vs the Rails backend).
 
 ---

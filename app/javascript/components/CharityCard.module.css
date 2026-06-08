@@ -5,6 +5,15 @@
   background: var(--bg-soft);
 }
 
+.avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 0.75rem;
+  border: 1px solid var(--line);
+}
+
 .heading {
   margin: 0 0 0.75rem;
   font-size: 1.05rem;

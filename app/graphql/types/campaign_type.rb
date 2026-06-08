@@ -14,30 +14,26 @@ module Types
     field :stats, Types::StatsType, null: false
     field :charity_organization, Types::CharityOrganizationType, null: false
 
-    # Story images are committed assets referenced by a stable token
-    # (campaigns/story/N.jpg). Rewrite those to digested propshaft URLs at read
-    # time, then sanitize.
+    # Story images are Active Storage attachments referenced in the stored HTML by a
+    # stable token (campaigns/story/N.jpg). Rewrite each token to its attached blob's
+    # URL (by order) at read time, then sanitize.
     def story_html
       html = object.story_html
       return nil if html.blank?
 
-      resolved = html.gsub(/src="(campaigns\/[^"]+)"/) do
-        %(src="#{ActionController::Base.helpers.asset_path(Regexp.last_match(1))}")
+      images = object.story_images.to_a
+      resolved = html.gsub(/src="campaigns\/story\/(\d+)\.jpg"/) do
+        blob = images[Regexp.last_match(1).to_i - 1]
+        blob ? %(src="#{AttachmentUrl.call(blob)}") : Regexp.last_match(0)
       end
       HtmlSanitizer.call(resolved)
     end
 
     def story_html_raw = object.story_html
 
-    # Resolve the committed asset to its propshaft (digested) URL. nil when the asset
-    # is absent (e.g. the synthetic campaign 2) — the client falls back to a gradient.
-    def cover_image_url
-      return nil if object.cover_image_path.blank?
-
-      ActionController::Base.helpers.asset_path(object.cover_image_path)
-    rescue StandardError
-      nil
-    end
+    # The banner's Active Storage URL (/rails/active_storage/...), or nil when there's
+    # no banner (e.g. the synthetic campaign 2) — the client falls back to a gradient.
+    def cover_image_url = AttachmentUrl.call(object.banner)
 
     def stats = object.stats.merge(goal_amount_cents: object.goal_amount_cents)
   end

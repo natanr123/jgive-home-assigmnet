@@ -4,7 +4,7 @@ export const CAMPAIGN_QUERY = `
       id name subtitle storyHtml coverImageUrl goalAmountCents currency
       presetAmounts { amountCents label }
       stats { raisedCents donorsCount percent goalAmountCents }
-      charityOrganization { id name email phoneNumber websiteUrl charityNumber aboutHtml }
+      charityOrganization { id name email phoneNumber websiteUrl charityNumber aboutHtml avatarUrl }
     }
   }`;
 

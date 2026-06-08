@@ -8,9 +8,17 @@
 require "json"
 
 data_dir     = Rails.root.join("db/seeds/data")
+images_dir   = data_dir.join("images")
 story_html   = File.read(data_dir.join("campaign_story.html"))
 charity_html = File.read(data_dir.join("charity_about.html"))
 donor_rows   = JSON.parse(File.read(data_dir.join("donations.json")))
+
+# Attach a committed seed image as an Active Storage blob, idempotently.
+attach = lambda do |attachment, path, content_type|
+  return if attachment.attached?
+
+  attachment.attach(io: File.open(path), filename: File.basename(path), content_type: content_type)
+end
 
 # --- Campaign 1: הגן הכתום ---------------------------------------------------
 venatata = CharityOrganization.find_or_create_by!(charity_number: "580689537") do |c|
@@ -20,6 +28,7 @@ venatata = CharityOrganization.find_or_create_by!(charity_number: "580689537") d
   c.website_url  = "http://www.venatata.org"
   c.about        = charity_html
 end
+attach.call(venatata.avatar, images_dir.join("avatar.png"), "image/png")
 
 orange_garden = Campaign.find_or_create_by!(name: "הגן הכתום") do |c|
   c.charity_organization = venatata
@@ -27,7 +36,6 @@ orange_garden = Campaign.find_or_create_by!(name: "הגן הכתום") do |c|
   c.story_html        = story_html
   c.goal_amount_cents = 5_000_000_00
   c.currency          = "ILS"
-  c.cover_image_path  = "campaigns/orange-garden-hero.jpg"
   c.preset_amounts    = [
     { "amount_cents" => 18_000,  "label" => "נטיעת עץ" },
     { "amount_cents" => 36_000,  "label" => "נטיעת 2 עצים 🧡 הכי נבחר" },
@@ -35,6 +43,15 @@ orange_garden = Campaign.find_or_create_by!(name: "הגן הכתום") do |c|
     { "amount_cents" => 180_000, "label" => "בונים מרחב לילדים" },
     { "amount_cents" => 500_000, "label" => "בוני הגן הכתום" }
   ]
+end
+attach.call(orange_garden.banner, images_dir.join("banner.jpg"), "image/jpeg")
+# Story images, attached in order — the storyHtml resolver maps tokens
+# (campaigns/story/N.jpg) to these blobs by index.
+unless orange_garden.story_images.attached?
+  (1..4).each do |n|
+    path = images_dir.join("story/#{n}.jpg")
+    orange_garden.story_images.attach(io: File.open(path), filename: "#{n}.jpg", content_type: "image/jpeg")
+  end
 end
 
 # Real donor entries (subset). name: null ⇒ anonymous. A couple kept pending and one
@@ -84,7 +101,6 @@ winter_coats = Campaign.find_or_create_by!(name: "מעילים לחורף") do |
   c.story_html        = "<h2>על הפרויקט</h2><p>איסוף מעילים חמים למשפחות בחורף.</p>"
   c.goal_amount_cents = 100_000_00
   c.currency          = "ILS"
-  c.cover_image_path  = "campaigns/winter-coats-cover.jpg"
   c.preset_amounts    = [
     { "amount_cents" => 5_000,  "label" => "מעיל לילד" },
     { "amount_cents" => 10_000, "label" => "מעיל למבוגר" },

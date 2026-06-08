@@ -10,8 +10,10 @@ module Types
     field :charity_number, String
     field :about_html, String, description: "Sanitized HTML"
     field :about_raw, String, description: "Unprocessed stored HTML (for the edit form)"
+    field :avatar_url, String, description: "Active Storage logo URL, or null"
 
     def about_html = HtmlSanitizer.call(object.about)
     def about_raw = object.about
+    def avatar_url = AttachmentUrl.call(object.avatar)
   end
 end

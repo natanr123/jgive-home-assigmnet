@@ -2,6 +2,10 @@ class Campaign < ApplicationRecord
   belongs_to :charity_organization
   has_many :donations, dependent: :destroy
 
+  # Images as Active Storage attachments (mirrors JGive's blob-backed media).
+  has_one_attached :banner
+  has_many_attached :story_images
+
   validates :name, presence: true
   validates :goal_amount_cents, numericality: { greater_than: 0 }
   validates :additional_amount_cents, :additional_donors_count,

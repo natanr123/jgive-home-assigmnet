@@ -5,6 +5,9 @@ import styles from "./CharityCard.module.css";
 export default function CharityCard({ org }: { org: CharityOrganization }) {
   return (
     <aside className={styles.card}>
+      {org.avatarUrl && (
+        <img className={styles.avatar} src={org.avatarUrl} alt={org.name} />
+      )}
       <h4 className={styles.heading}>{he.contactHeading}</h4>
       <dl className={styles.list}>
         {org.email && (
