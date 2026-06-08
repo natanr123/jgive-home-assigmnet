@@ -1,4 +1,4 @@
-# Development Postgres only — the Rails app runs on the host via `bin/dev`.
+# Development Postgres + Redis — the Rails app + Sidekiq run on the host via `bin/dev`.
 # docker compose reads `.env` natively for ${VAR} interpolation below.
 services:
   db:
@@ -17,5 +17,18 @@ services:
       timeout: 5s
       retries: 5
 
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redisdata:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
 volumes:
   pgdata:
+  redisdata:

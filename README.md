@@ -16,7 +16,7 @@ not shipped. RTL Hebrew throughout.
 
 ## Run it locally
 
-**Prerequisites:** Ruby 3.4.7, Node 20+, Docker (for Postgres).
+**Prerequisites:** Ruby 3.4.7, Node 20+, Docker (for Postgres + Redis).
 
 ```bash
 cp .env.example .env          # local DB credentials (consumed by compose AND Rails)
@@ -120,6 +120,14 @@ gem; server-side gems aren't observable from outside.)
 - **Realistic seeds without 3,170 rows:** `additional_amount_cents` /
   `additional_donors_count` (JGive's own "additional donations" idea) absorb the offline
   remainder so totals match the live page exactly.
+- **Background jobs on Sidekiq** (Redis-backed): creating a donation enqueues
+  `CalcCommission` (a Sidekiq worker) via `after_create_commit` — after-commit so the
+  worker, in its own process, sees the committed row — which sets `commission_cents` to
+  10% of the amount. Redis is in docker-compose; `bin/dev` runs a `worker` process
+  alongside web + esbuild; the Sidekiq dashboard is mounted at **`/sidekiq`** (no auth —
+  protect it behind admin in production). Specs use Sidekiq's fake mode (no Redis); the
+  enqueue spec runs non-transactionally so `after_commit` actually fires. *(Not in the
+  brief — a background-processing demo.)*
 - **Images via Active Storage** (mirrors JGive): campaign `banner` + `story_images` and
   charity `avatar` are attachments; GraphQL resolves them to relative
   `/rails/active_storage/blobs/redirect/...` URLs (`only_path: true`, so no host config) —

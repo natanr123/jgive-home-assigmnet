@@ -66,4 +66,10 @@ RSpec.describe Donation, type: :model do
       expect(campaign.donations.countable).to contain_exactly(pending, paid)
     end
   end
+
+  describe "commission", :commit do
+    it "enqueues CalcCommission after a donation is created" do
+      expect { create(:donation) }.to change(CalcCommission.jobs, :size).by(1)
+    end
+  end
 end

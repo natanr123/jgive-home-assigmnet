@@ -10,6 +10,10 @@ abort("The Rails environment is running in production mode!") if Rails.env.produ
 require 'rspec/rails'
 # Add additional requires below this line. Rails is not loaded until this point!
 
+# Sidekiq fake mode: jobs queue into an in-memory array (no Redis needed in tests).
+require 'sidekiq/test_api'
+Sidekiq::Testing.fake!
+
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
 # run as spec files by default. This means that files in spec/support that end
@@ -70,6 +74,20 @@ RSpec.configure do |config|
 
   # FactoryBot: use bare `create`/`build` in specs instead of `FactoryBot.create`.
   config.include FactoryBot::Syntax::Methods
+
+  # Clear queued Sidekiq jobs between examples.
+  config.before { Sidekiq::Job.clear_all }
+
+  # Examples tagged `:commit` run without the wrapping transaction so
+  # after_commit callbacks (e.g. the commission enqueue) actually fire.
+  config.before(:each, :commit) { self.use_transactional_tests = false }
+  config.after(:each, :commit) do
+    ActiveStorage::Attachment.delete_all
+    ActiveStorage::Blob.delete_all
+    Donation.delete_all
+    Campaign.delete_all
+    CharityOrganization.delete_all
+  end
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
 end

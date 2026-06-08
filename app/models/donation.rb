@@ -12,6 +12,11 @@ class Donation < ApplicationRecord
   scope :countable, -> { where(status: [ :pending, :paid ]) }
   scope :recent_first, -> { order(created_at: :desc) }
 
+  # Whenever a donation is created, compute its commission on a background job.
+  # after_create_commit (not after_create) so the row is committed before the
+  # Sidekiq worker — in a separate process — looks it up.
+  after_create_commit { CalcCommission.perform_async(id) }
+
   validates :amount_cents, numericality: { greater_than: 0, less_than: 100_000_000 }
   validates :comment, length: { maximum: 280 }
   validates :donor_first_name, presence: true, unless: :anonymous?
