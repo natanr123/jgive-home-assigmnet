@@ -9,9 +9,24 @@ Built as a **Rails 8 + GraphQL backend serving a React 19 + React Router v7 SPA*
 same shape as JGive's real production app, with the Router v5→v7 modernization they have
 not shipped. RTL Hebrew throughout.
 
-> **Live URL:** **https://web-production-bdbd1.up.railway.app** — deployed on Railway
-> (web + Sidekiq worker + Postgres + Redis; uploads on Google Cloud Storage). See
-> [Deployment](#deployment).
+### Live URLs
+
+Deployed on **Railway** (web + Sidekiq worker + Postgres + Redis; uploads on Google Cloud
+Storage) — see [Deployment](#deployment).
+
+| What | URL |
+|---|---|
+| **App** (redirects to the campaign) | https://web-production-bdbd1.up.railway.app |
+| Campaign page | https://web-production-bdbd1.up.railway.app/campaigns/1 |
+| Donate flow (modal) | https://web-production-bdbd1.up.railway.app/campaigns/1/donate/amount |
+| Campaign edit (beyond brief) | https://web-production-bdbd1.up.railway.app/campaigns/1/edit |
+| GraphQL endpoint | https://web-production-bdbd1.up.railway.app/graphql |
+| Health check | https://web-production-bdbd1.up.railway.app/up |
+| Sidekiq dashboard | https://web-production-bdbd1.up.railway.app/sidekiq |
+| Source (GitHub) | https://github.com/natanr123/jgive-home-assigmnet |
+
+The **Sidekiq dashboard** is HTTP Basic-auth protected (user `admin`; the password is a
+Railway variable, also in the git-ignored `.env.railway`).
 
 ---
 
