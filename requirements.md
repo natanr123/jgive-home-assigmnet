@@ -115,7 +115,7 @@ brief (built anyway).
 | NFR-O2 | One-command dev startup (`bin/dev` → web + esbuild + Sidekiq worker). |
 | NFR-O3 | **Background processing** on Active Job + Sidekiq (Redis); dashboard for visibility. |
 | NFR-O4 | **Deploy-ready**: production Dockerfile + Kamal retained; Ruby pinned (`.ruby-version`). Deploy itself is mandatory per the brief (deferred at the reviewer's request); Active Storage would move to S3 for production. |
-| NFR-O5 | A **deployed live URL** is a mandatory deliverable. 🟡 deferred-then-due. |
+| NFR-O5 | A **deployed live URL** is a mandatory deliverable. ✅ https://web-production-bdbd1.up.railway.app (Railway). |
 
 ### Maintainability / process
 

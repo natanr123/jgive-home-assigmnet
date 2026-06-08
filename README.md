@@ -9,8 +9,9 @@ Built as a **Rails 8 + GraphQL backend serving a React 19 + React Router v7 SPA*
 same shape as JGive's real production app, with the Router v5→v7 modernization they have
 not shipped. RTL Hebrew throughout.
 
-> **Live URL:** _deferred — see [Deployment](#deployment)._ Deploy is mandatory per the
-> brief but the app is built local-first at the reviewer's request; it is deploy-ready.
+> **Live URL:** **https://web-production-bdbd1.up.railway.app** — deployed on Railway
+> (web + Sidekiq worker + Postgres + Redis; uploads on Google Cloud Storage). See
+> [Deployment](#deployment).
 
 ---
 
@@ -258,14 +259,20 @@ search/sort (load-more only), עיגול לטובה, video hero, heart counts. S
 
 ## Deployment
 
-Target platform: **Railway** (managed Postgres + Redis + a separate Sidekiq worker, warm
-instances so the demo link responds immediately). The app deploys from the production
-`Dockerfile`; assets precompile via esbuild + propshaft. Production runs jobs on
-**Sidekiq/Redis** (matching dev) and stores uploads on **Google Cloud Storage**.
+**Live on Railway: https://web-production-bdbd1.up.railway.app** (managed Postgres + Redis
++ a separate Sidekiq worker, warm instances so the link responds immediately). Deploys from
+the production `Dockerfile`; assets precompile via esbuild + propshaft. Production runs jobs
+on **Sidekiq/Redis** (matching dev) and stores uploads on **Google Cloud Storage**.
 
-**Two services from this repo:**
-- **web** — default Dockerfile CMD (Thruster/Puma); healthcheck path `/up`.
-- **worker** — start command `bundle exec sidekiq` (no healthcheck).
+Provisioned entirely through the **Railway CLI** (`@railway/cli`): `init` → `add --database
+postgres/redis` → `add --service web|worker` → `variables` (secrets piped via stdin) →
+`up` → `domain`.
+
+**Two services from one image** (`bin/boot` dispatches on `PROCESS_TYPE`, since the CLI
+can't set a per-service start command):
+- **web** — Puma; the Railway domain targets port **3000** (the container runs non-root, so
+  it can't bind 80).
+- **worker** — `PROCESS_TYPE=worker` → `bundle exec sidekiq`.
 
 **Provision in the Railway project:** Postgres, and Redis with **`maxmemory-policy noeviction`**
 (Sidekiq requirement — eviction silently drops jobs).
