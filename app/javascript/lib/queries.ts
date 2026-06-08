@@ -12,7 +12,7 @@ export const RECENT_DONATIONS_QUERY = `
   query RecentDonations($campaignId: ID!, $page: Int, $perPage: Int) {
     recentDonations(campaignId: $campaignId, page: $page, perPage: $perPage) {
       totalCount nextPage
-      donations { id displayName amountCents currency recurring comment pending createdAt }
+      donations { id displayName amountCents currency recurring recurringMonths comment pending createdAt }
     }
   }`;
 
@@ -36,7 +36,7 @@ export const UPDATE_CAMPAIGN_MUTATION = `
 export const CREATE_DONATION_MUTATION = `
   mutation CreateDonation($input: CreateDonationInput!) {
     createDonation(input: $input) {
-      donation { id displayName amountCents pending }
+      donation { id displayName amountCents recurring recurringMonths totalCents pending }
       stats { raisedCents donorsCount percent goalAmountCents }
       errors
     }

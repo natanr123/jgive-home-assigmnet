@@ -75,7 +75,7 @@ RSpec.describe "POST /graphql", type: :request do
 
   describe "createDonation mutation" do
     let(:mutation) do
-      %(mutation($i: CreateDonationInput!){ createDonation(input:$i){ donation{ id displayName amountCents recurring pending } stats{ donorsCount raisedCents } errors } })
+      %(mutation($i: CreateDonationInput!){ createDonation(input:$i){ donation{ id displayName amountCents recurring recurringMonths totalCents pending } stats{ donorsCount raisedCents } errors } })
     end
 
     it "creates a pending donation and moves the stats" do
@@ -89,12 +89,25 @@ RSpec.describe "POST /graphql", type: :request do
       }.to change { campaign.donations.pending.count }.by(1)
     end
 
-    it "supports an anonymous recurring donation" do
-      input = { campaignId: campaign.id, amountCents: 18_000, frequency: "monthly", displayPreference: "anonymous" }
+    it "supports an anonymous recurring donation with a term" do
+      input = { campaignId: campaign.id, amountCents: 18_000, frequency: "monthly",
+                recurringMonths: 36, displayPreference: "anonymous" }
       body = gql(mutation, { i: input })["data"]["createDonation"]
       expect(body["errors"]).to be_empty
       expect(body["donation"]["recurring"]).to be(true)
+      expect(body["donation"]["recurringMonths"]).to eq(36)
+      # total commitment is amount × term; progress counts only the per-charge amount
+      expect(body["donation"]["totalCents"]).to eq(648_000)
+      expect(body["stats"]["raisedCents"]).to eq(18_000)
       expect(body["donation"]["displayName"]).to be_nil
+    end
+
+    it "rejects a recurring donation with a term over the cap" do
+      input = { campaignId: campaign.id, amountCents: 18_000, frequency: "monthly",
+                recurringMonths: 37, displayPreference: "anonymous" }
+      body = gql(mutation, { i: input })["data"]["createDonation"]
+      expect(body["donation"]).to be_nil
+      expect(body["errors"]).to include(a_string_matching(/less than or equal to 36/))
     end
 
     it "returns validation errors without creating a record" do

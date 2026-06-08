@@ -26,10 +26,12 @@ interface CreateResult {
 // modal refreshes its progress/donor-count with zero manual refetching.
 export async function donateAction({ request, params }: ActionFunctionArgs) {
   const form = await request.formData();
+  const recurringMonths = form.get("recurringMonths");
   const input = {
     campaignId: params.id,
     amountCents: Number(form.get("amountCents")),
     frequency: String(form.get("frequency") || "one_time"),
+    recurringMonths: recurringMonths ? Number(recurringMonths) : null,
     displayPreference: String(form.get("displayPreference") || "full_name"),
     donorFirstName: (form.get("donorFirstName") as string) || null,
     donorLastName: (form.get("donorLastName") as string) || null,
@@ -53,15 +55,22 @@ export default function DonateDetails() {
 
   const amountCents = Number(search.get("amountCents") || 0);
   const frequency = search.get("frequency") || "one_time";
+  const recurringMonths = Number(search.get("recurringMonths") || 0);
   const pref = search.get("displayPreference") || "full_name";
   const comment = search.get("comment") || "";
   const anonymous = pref === "anonymous";
+  const isRecurring = frequency === "monthly";
+  const totalCents = isRecurring && recurringMonths ? amountCents * recurringMonths : amountCents;
   const submitting = navigation.state === "submitting";
 
-  // Defensive: a deep-link straight to details with no amount goes back to step 1.
+  // Defensive: a deep-link straight to details that is missing required wizard state
+  // (no amount, or a monthly donation with no term) goes back to step 1, where those
+  // are chosen — rather than letting the user submit something the backend will reject.
   useEffect(() => {
-    if (!amountCents) navigate(`/campaigns/${id}/donate/amount`, { replace: true });
-  }, [amountCents, id, navigate]);
+    if (!amountCents || (isRecurring && !recurringMonths)) {
+      navigate(`/campaigns/${id}/donate/amount`, { replace: true });
+    }
+  }, [amountCents, isRecurring, recurringMonths, id, navigate]);
 
   return (
     <Form method="post">
@@ -69,6 +78,7 @@ export default function DonateDetails() {
 
       <input type="hidden" name="amountCents" value={amountCents} />
       <input type="hidden" name="frequency" value={frequency} />
+      {isRecurring && <input type="hidden" name="recurringMonths" value={recurringMonths} />}
       <input type="hidden" name="displayPreference" value={pref} />
       <input type="hidden" name="comment" value={comment} />
 
@@ -104,7 +114,13 @@ export default function DonateDetails() {
           {he.back}
         </button>
         <span>
-          {he.yourDonation}: <strong>{formatILS(amountCents)}</strong>
+          {he.yourDonation}: <strong>{formatILS(totalCents)}</strong>
+          {isRecurring && recurringMonths > 0 && (
+            <span className={styles.footerNote}>
+              {" "}
+              ({recurringMonths} × {formatILS(amountCents)})
+            </span>
+          )}
         </span>
         <button type="submit" className={styles.primary} disabled={submitting}>
           {submitting ? "…" : he.submitDonation}

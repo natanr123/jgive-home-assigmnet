@@ -11,6 +11,10 @@ const PREFS = [
   { value: "anonymous", label: he.prefAnonymous, hint: he.prefAnonymousHint },
 ] as const;
 
+// JGive's maxRecurringMonths. Standing orders default to the full term, like the source.
+const MAX_RECURRING_MONTHS = 36;
+const MONTH_OPTIONS = Array.from({ length: MAX_RECURRING_MONTHS }, (_, i) => i + 1);
+
 export default function DonateAmount() {
   const campaign = useOutletContext<Campaign>();
   const navigate = useNavigate();
@@ -19,12 +23,21 @@ export default function DonateAmount() {
   const [presetCents, setPresetCents] = useState<number | null>(null);
   const [custom, setCustom] = useState("");
   const [frequency, setFrequency] = useState("one_time");
+  const [months, setMonths] = useState(MAX_RECURRING_MONTHS);
   const [showComment, setShowComment] = useState(false);
   const [comment, setComment] = useState("");
   const [pref, setPref] = useState("full_name");
 
+  const isRecurring = frequency === "monthly";
+  // amountCents is the per-charge (monthly, for recurring) amount; totalCents is the
+  // donor's full commitment shown to them = per-charge × term.
   const amountCents = presetCents ?? (custom ? Math.round(Number(custom) * 100) : 0);
+  const totalCents = isRecurring ? amountCents * months : amountCents;
   const canContinue = amountCents > 0;
+
+  // Render a preset's headline: "36 × ₪360" for recurring, "₪360" otherwise.
+  const presetHeadline = (cents: number) =>
+    isRecurring ? `${months} × ${formatILS(cents)}` : formatILS(cents);
 
   const onContinue = () => {
     const params = new URLSearchParams({
@@ -32,6 +45,7 @@ export default function DonateAmount() {
       frequency,
       displayPreference: pref,
     });
+    if (isRecurring) params.set("recurringMonths", String(months));
     if (showComment && comment.trim()) params.set("comment", comment.trim());
     navigate(`/campaigns/${id}/donate/details?${params.toString()}`);
   };
@@ -69,7 +83,7 @@ export default function DonateAmount() {
               setCustom("");
             }}
           >
-            <span className={styles.presetAmount}>{formatILS(p.amountCents)}</span>
+            <span className={styles.presetAmount}>{presetHeadline(p.amountCents)}</span>
             <span className={styles.presetLabel}>{p.label}</span>
           </button>
         ))}
@@ -89,6 +103,31 @@ export default function DonateAmount() {
           />
         </label>
       </div>
+
+      {isRecurring && (
+        <div className={styles.months}>
+          <label htmlFor="months" className={styles.fieldLabel}>
+            {he.numberOfMonths}
+          </label>
+          <div className={styles.monthsRow}>
+            <select
+              id="months"
+              className={styles.select}
+              value={months}
+              onChange={(e) => setMonths(Number(e.target.value))}
+            >
+              {MONTH_OPTIONS.map((m) => (
+                <option key={m} value={m}>
+                  {m} {he.monthsUnit}
+                </option>
+              ))}
+            </select>
+            <span className={styles.monthsTotal}>
+              {he.total}: <strong>{formatILS(totalCents)}</strong>
+            </span>
+          </div>
+        </div>
+      )}
 
       <label className={styles.checkRow}>
         <input
@@ -128,7 +167,13 @@ export default function DonateAmount() {
 
       <footer className={styles.footer}>
         <span>
-          {he.yourDonation}: <strong>{formatILS(amountCents)}</strong>
+          {he.yourDonation}: <strong>{formatILS(totalCents)}</strong>
+          {isRecurring && amountCents > 0 && (
+            <span className={styles.footerNote}>
+              {" "}
+              ({months} × {formatILS(amountCents)})
+            </span>
+          )}
         </span>
         <button type="button" className={styles.primary} disabled={!canContinue} onClick={onContinue}>
           {he.continue}

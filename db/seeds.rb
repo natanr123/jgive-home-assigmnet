@@ -66,6 +66,7 @@ if orange_garden.donations.none?
       amount_cents:       amount,
       currency:           "ILS",
       frequency:          row["recurring"] ? "monthly" : "one_time",
+      recurring_months:   row["recurring"] ? (row["recurring_months"] || 12) : nil,
       status:             (i < 2 ? "pending" : "paid"), # first two pending, rest paid
       completed_at:       (i < 2 ? nil : Time.current - i.hours),
       display_preference: anonymous ? "anonymous" : (last.present? ? "full_name" : "first_name_only"),

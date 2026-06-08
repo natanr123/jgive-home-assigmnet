@@ -21,6 +21,7 @@ FactoryBot.define do
 
     trait :recurring do
       frequency { "monthly" }
+      recurring_months { 12 }
     end
 
     trait :with_comment do

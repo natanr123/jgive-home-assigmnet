@@ -15,6 +15,10 @@ class Campaign < ApplicationRecord
   # Aggregates for the progress header. One round-trip (SUM + COUNT together),
   # memoized per instance. `additional_*` absorb offline/imported donations so
   # seeds can hit the real campaign totals without inserting thousands of rows.
+  #
+  # Recurring donations contribute their per-charge `amount_cents` (the installment
+  # moving now), not the full multi-year pledge (Donation#total_cents). To count the
+  # whole commitment instead, sum `amount_cents * COALESCE(recurring_months, 1)` here.
   def stats
     @stats ||= begin
       sum, count = donations.countable.pick(

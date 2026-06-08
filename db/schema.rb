@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_08_115152) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_08_170155) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -80,6 +80,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_08_115152) do
     t.string "donor_first_name"
     t.string "donor_last_name"
     t.string "frequency", default: "one_time", null: false
+    t.integer "recurring_months"
     t.string "status", default: "pending", null: false
     t.datetime "updated_at", null: false
     t.index ["campaign_id", "status"], name: "index_donations_on_campaign_id_and_status"

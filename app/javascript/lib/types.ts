@@ -43,6 +43,7 @@ export interface Donation {
   amountCents: number;
   currency: string;
   recurring: boolean;
+  recurringMonths?: number | null;
   comment: string | null;
   pending: boolean;
   createdAt: string;

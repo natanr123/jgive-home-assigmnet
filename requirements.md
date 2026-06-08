@@ -27,7 +27,7 @@ brief (built anyway).
 | # | Requirement | Status |
 |---|---|---|
 | FR-7 | Amount: **a few preset options + a custom amount**. | ✅ |
-| FR-8 | **One-time vs. recurring** choice. | ✅ (choice stored; billing mechanics ⛔) |
+| FR-8 | **One-time vs. recurring** choice. | ✅ (standing-order term selector 1–36 mo; `total = per-charge × term`; progress counts the per-charge installment) |
 | FR-9 | **Donor display preference**: full name / first name only / anonymous. | ✅ |
 | FR-10 | **Optional dedication message**. | ✅ (stored as `comment`) |
 | FR-11 | Submitting **creates a donation record in `pending` state**. | ✅ |

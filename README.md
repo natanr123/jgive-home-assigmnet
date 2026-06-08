@@ -125,6 +125,14 @@ gem; server-side gems aren't observable from outside.)
   "ממתין לאישור" (the `pending` boolean is the only status the API exposes; the raw enum
   never leaks). In production you'd count paid only, hide pending from the feed, and
   rate-limit `createDonation` behind the payment intent.
+- **Recurring (standing order) = per-charge amount × term.** `amount_cents` is the
+  *monthly* charge; a nullable `recurring_months` (1–36, JGive's `maxRecurringMonths`)
+  holds the term, and `Donation#total_cents` is the donor-facing commitment shown in the
+  modal (`"N × ₪amount"`, total `"סה"כ"`). **Progress counts the per-charge installment**
+  (the money moving now), not the multi-year pledge — isolated as a one-line switch in
+  `Campaign#stats`, the same way `countable` is. The term is required+bounded for monthly
+  and normalized to `nil` for one-time; the wizard guards a deep-link that arrives monthly
+  without a term by bouncing back to the amount step.
 - **Donor display name resolved server-side** from the display preference
   (full name / first name only / anonymous → `null`), mirroring JGive's `name: null`.
   The DB column is `comment` (matches their field + the UI label "הערה"); it implements

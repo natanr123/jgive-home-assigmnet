@@ -9,7 +9,12 @@ export default function DonationCard({ donation }: { donation: Donation }) {
       <div className={styles.top}>
         <span className={styles.amount}>{formatILS(donation.amountCents)}</span>
         {donation.pending && <span className={styles.pending}>{he.pendingBadge}</span>}
-        {donation.recurring && <span className={styles.recurring}>{he.recurringLabel}</span>}
+        {donation.recurring && (
+          <span className={styles.recurring}>
+            {he.recurringLabel}
+            {donation.recurringMonths ? ` · ${donation.recurringMonths} ${he.monthsUnit}` : ""}
+          </span>
+        )}
       </div>
       <div className={styles.name}>{donation.displayName ?? he.anonymous}</div>
       <div className={styles.time}>{relativeTime(donation.createdAt)}</div>

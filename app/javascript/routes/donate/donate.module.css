@@ -104,6 +104,32 @@
   border-radius: 6px;
 }
 
+.months {
+  margin-bottom: 1rem;
+}
+
+.monthsRow {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.monthsRow select {
+  flex: 1;
+}
+
+.monthsTotal {
+  white-space: nowrap;
+  font-size: 0.95rem;
+  color: var(--ink);
+}
+
+.footerNote {
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: var(--muted);
+}
+
 .checkRow {
   display: flex;
   align-items: center;

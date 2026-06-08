@@ -26,6 +26,13 @@ RSpec.describe Campaign, type: :model do
       expect(campaign.stats[:donors_count]).to eq(2)
     end
 
+    it "counts a recurring donation's per-charge amount, not the full multi-year pledge" do
+      create(:donation, :recurring, campaign: campaign, amount_cents: 18_000, recurring_months: 36)
+      # progress reflects the ₪180 installment moving now, not 36 × ₪180 = ₪6,480
+      expect(campaign.stats[:raised_cents]).to eq(18_000)
+      expect(campaign.stats[:donors_count]).to eq(1)
+    end
+
     it "adds additional_* offline totals" do
       campaign.update!(additional_amount_cents: 900_00, additional_donors_count: 100)
       create(:donation, :paid, campaign: campaign, amount_cents: 10_000)
