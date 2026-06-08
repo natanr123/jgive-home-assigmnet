@@ -79,7 +79,16 @@ export default function CampaignEdit() {
   const [avatarSignedId, setAvatarSignedId] = useState<string | null>(null);
   const [storyThumbs, setStoryThumbs] = useState<string[]>(campaign.storyImageUrls ?? []);
   const [storyImageSignedIds, setStoryImageSignedIds] = useState<string[]>([]);
+  const [copiedIdx, setCopiedIdx] = useState<number | null>(null);
   const [uploadError, setUploadError] = useState<string | null>(null);
+
+  // Copy the full embed snippet for story image N so it can be pasted into the story HTML.
+  function copyEmbed(index: number) {
+    const snippet = `<figure><img src="campaigns/story/${index + 1}.jpg"></figure>`;
+    navigator.clipboard?.writeText(snippet);
+    setCopiedIdx(index);
+    setTimeout(() => setCopiedIdx((c) => (c === index ? null : c)), 1500);
+  }
 
   const saving = navigation.state !== "idle";
 
@@ -218,10 +227,23 @@ export default function CampaignEdit() {
             {storyThumbs.length > 0 && (
               <div className={styles.storyThumbs}>
                 {storyThumbs.map((u, i) => (
-                  <img key={i} className={styles.storyThumb} src={u} alt="" />
+                  <figure key={i} className={styles.storyThumbItem}>
+                    <img className={styles.storyThumb} src={u} alt="" />
+                    <figcaption>
+                      <button
+                        type="button"
+                        className={styles.storyToken}
+                        onClick={() => copyEmbed(i)}
+                        title={he.copyEmbedTitle}
+                      >
+                        {copiedIdx === i ? he.copied : `campaigns/story/${i + 1}.jpg`}
+                      </button>
+                    </figcaption>
+                  </figure>
                 ))}
               </div>
             )}
+            <p className={styles.storyHint}>{he.storyEmbedHint}</p>
             <input
               type="file"
               accept="image/*"
