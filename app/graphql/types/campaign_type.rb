@@ -6,6 +6,7 @@ module Types
     field :name, String, null: false
     field :subtitle, String
     field :story_html, String, description: "Sanitized HTML"
+    field :story_html_raw, String, description: "Unprocessed stored HTML (for the edit form)"
     field :cover_image_url, String, description: "Resolved asset URL, or null if missing"
     field :goal_amount_cents, Integer, null: false
     field :currency, String, null: false
@@ -25,6 +26,8 @@ module Types
       end
       HtmlSanitizer.call(resolved)
     end
+
+    def story_html_raw = object.story_html
 
     # Resolve the committed asset to its propshaft (digested) URL. nil when the asset
     # is absent (e.g. the synthetic campaign 2) — the client falls back to a gradient.

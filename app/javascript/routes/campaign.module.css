@@ -37,6 +37,14 @@
   color: var(--muted);
 }
 
+.editLink {
+  display: inline-block;
+  margin-top: 0.5rem;
+  color: var(--brand-magenta);
+  text-decoration: none;
+  font-size: 0.85rem;
+}
+
 @media (max-width: 720px) {
   .ctaRow {
     flex-direction: column-reverse;

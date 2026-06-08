@@ -5,6 +5,7 @@ import DonateModal from "./routes/donate/DonateModal";
 import DonateAmount from "./routes/donate/DonateAmount";
 import DonateDetails, { donateAction } from "./routes/donate/DonateDetails";
 import DonateThanks from "./routes/donate/DonateThanks";
+import CampaignEdit, { editLoader, editAction } from "./routes/CampaignEdit";
 
 export const router = createBrowserRouter([
   {
@@ -24,5 +25,12 @@ export const router = createBrowserRouter([
         ],
       },
     ],
+  },
+  {
+    path: "/campaigns/:id/edit",
+    loader: editLoader,
+    action: editAction,
+    Component: CampaignEdit,
+    errorElement: <ErrorPage />,
   },
 ]);

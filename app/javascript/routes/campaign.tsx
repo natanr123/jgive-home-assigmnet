@@ -1,4 +1,4 @@
-import { useLoaderData, Outlet, type LoaderFunctionArgs } from "react-router";
+import { useLoaderData, Outlet, Link, type LoaderFunctionArgs } from "react-router";
 import { gql } from "../lib/gql";
 import { CAMPAIGN_QUERY } from "../lib/queries";
 import type { Campaign } from "../lib/types";
@@ -53,6 +53,7 @@ export default function CampaignPage() {
             <div className={styles.titleCol}>
               <h1 className={styles.headline}>{campaign.name}</h1>
               {campaign.subtitle && <p className={styles.subtitle}>{campaign.subtitle}</p>}
+              <Link to="edit" className={styles.editLink}>✎ {he.edit}</Link>
             </div>
             <div className={styles.ctaCol}>
               <CtaBlock campaign={campaign} />

@@ -112,6 +112,40 @@ RSpec.describe "POST /graphql", type: :request do
     end
   end
 
+  describe "updateCampaign mutation" do
+    let(:mutation) do
+      %(mutation($i: UpdateCampaignInput!){ updateCampaign(input:$i){ campaign{ name subtitle goalAmountCents presetAmounts{amountCents label} charityOrganization{ email } } errors } })
+    end
+
+    it "updates campaign fields, presets, and the charity org" do
+      input = {
+        id: campaign.id, subtitle: "כותרת חדשה", goalAmountCents: 7_000_00,
+        presetAmounts: [ { amountCents: 5_000, label: "חדש" } ],
+        charityOrganization: { email: "new@example.org" }
+      }
+      body = gql(mutation, { i: input })["data"]["updateCampaign"]
+      expect(body["errors"]).to be_empty
+      expect(body["campaign"]["subtitle"]).to eq("כותרת חדשה")
+      expect(body["campaign"]["goalAmountCents"]).to eq(7_000_00)
+      expect(body["campaign"]["presetAmounts"]).to eq([ { "amountCents" => 5_000, "label" => "חדש" } ])
+      expect(body["campaign"]["charityOrganization"]["email"]).to eq("new@example.org")
+      expect(campaign.reload.subtitle).to eq("כותרת חדשה")
+      expect(org.reload.email).to eq("new@example.org")
+    end
+
+    it "returns validation errors without persisting" do
+      body = gql(mutation, { i: { id: campaign.id, goalAmountCents: 0 } })["data"]["updateCampaign"]
+      expect(body["campaign"]).to be_nil
+      expect(body["errors"]).to include(a_string_matching(/greater than 0/))
+      expect(campaign.reload.goal_amount_cents).not_to eq(0)
+    end
+
+    it "reports an unknown campaign" do
+      body = gql(mutation, { i: { id: "999999", subtitle: "x" } })["data"]["updateCampaign"]
+      expect(body["errors"]).to include("Campaign not found")
+    end
+  end
+
   describe "introspection" do
     it "is available in the test environment" do
       body = gql("{ __schema { queryType { name } } }")

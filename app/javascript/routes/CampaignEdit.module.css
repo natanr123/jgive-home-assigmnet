@@ -1,0 +1,144 @@
+.shell {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 2rem 1.25rem 4rem;
+}
+
+.head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.head h1 {
+  margin: 0;
+  font-size: 1.6rem;
+}
+
+.back {
+  color: var(--brand-magenta);
+  text-decoration: none;
+  font-size: 0.95rem;
+}
+
+.intro {
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin: 0.25rem 0 1.5rem;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.field > span {
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.field input,
+.field textarea,
+.presetRow input {
+  width: 100%;
+  padding: 0.6rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font: inherit;
+  background: var(--bg);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.85rem;
+  direction: ltr;
+  text-align: left;
+  resize: vertical;
+}
+
+.fieldset {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.fieldset legend {
+  font-weight: 700;
+  padding: 0 0.4rem;
+}
+
+.presetRow {
+  display: grid;
+  grid-template-columns: 130px 1fr auto;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.remove {
+  border: 1px solid var(--line);
+  background: var(--bg-soft);
+  border-radius: 8px;
+  padding: 0.5rem 0.8rem;
+}
+
+.add {
+  align-self: flex-start;
+  border: 1px dashed var(--line);
+  background: none;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  color: var(--brand-magenta);
+}
+
+.errors {
+  margin: 0;
+  padding: 0.75rem 1.4rem;
+  background: #fff0f0;
+  border: 1px solid #ffd0d0;
+  border-radius: 8px;
+  color: #b00020;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.cancel {
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.save {
+  background: var(--brand-magenta);
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  padding: 0.7rem 2rem;
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.save:disabled {
+  opacity: 0.5;
+}

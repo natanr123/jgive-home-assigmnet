@@ -18,6 +18,7 @@ export interface CharityOrganization {
   websiteUrl?: string | null;
   charityNumber?: string | null;
   aboutHtml?: string | null;
+  aboutRaw?: string | null;
 }
 
 export interface Campaign {
@@ -25,6 +26,7 @@ export interface Campaign {
   name: string;
   subtitle?: string | null;
   storyHtml?: string | null;
+  storyHtmlRaw?: string | null;
   coverImageUrl?: string | null;
   goalAmountCents: number;
   currency: string;

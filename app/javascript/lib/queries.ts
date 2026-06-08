@@ -16,6 +16,23 @@ export const RECENT_DONATIONS_QUERY = `
     }
   }`;
 
+export const CAMPAIGN_EDIT_QUERY = `
+  query CampaignEdit($id: ID!) {
+    campaign(id: $id) {
+      id name subtitle storyHtmlRaw goalAmountCents currency
+      presetAmounts { amountCents label }
+      charityOrganization { id name email phoneNumber websiteUrl charityNumber aboutRaw }
+    }
+  }`;
+
+export const UPDATE_CAMPAIGN_MUTATION = `
+  mutation UpdateCampaign($input: UpdateCampaignInput!) {
+    updateCampaign(input: $input) {
+      campaign { id }
+      errors
+    }
+  }`;
+
 export const CREATE_DONATION_MUTATION = `
   mutation CreateDonation($input: CreateDonationInput!) {
     createDonation(input: $input) {
