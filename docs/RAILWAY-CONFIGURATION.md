@@ -8,6 +8,11 @@ This project defines its Railway infrastructure in code.
 
 Use this file to describe the Railway project you want: services, databases, buckets, custom domains, replicas, groups, and environment variables.
 
+The resulting project — `web` + `worker` services (one image, two roles) wired to managed
+Postgres and Redis:
+
+![Railway project canvas: web and worker services connected to Postgres and Redis](railway-diagram.png)
+
 ## Common commands
 
 Create the configuration files:

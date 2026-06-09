@@ -82,6 +82,8 @@ The short version — full reasoning in **[PLAN.md](docs/PLAN.md#key-decisions--
 | **[PLAN.md](docs/PLAN.md)** | Architecture & the modernization story, full decisions, the payment plan, and deployment / infrastructure-as-code |
 | **[MODELS.md](docs/MODELS.md)** | The data model — `CharityOrganization → Campaign → Donation`, fields, enums, and relationships |
 | **[DEPLOY.md](docs/DEPLOY.md)** | Step-by-step Railway deploy runbook — requirements, first-time provision, routine deploys, gotchas |
+| **[RAILWAY-CONFIGURATION.md](docs/RAILWAY-CONFIGURATION.md)** | Railway infrastructure-as-code reference — `railway.ts` and the `railway config` commands (with the project diagram) |
+| **[railway-diagram.png](docs/railway-diagram.png)** | Railway project canvas — `web` + `worker` services wired to Postgres + Redis |
 | **[REQUIREMENTS.md](docs/REQUIREMENTS.md)** | Functional & non-functional requirements, with status |
 | **[jgive-backend-home-assignment.md](docs/jgive-backend-home-assignment.md)** | The original assignment brief |
 
