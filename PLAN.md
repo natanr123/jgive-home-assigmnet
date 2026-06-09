@@ -85,7 +85,7 @@ gem; server-side gems aren't observable from outside.)
   the brief's "dedication message".
 - **No `donors` table.** Without accounts (out of scope) there's no identity key to dedupe
   on, and the card data is a per-donation snapshot. Clean upgrade path: add `donors` +
-  nullable `donation.donor_id` later. (Full rationale in `docs/erd.md`.)
+  nullable `donation.donor_id` later.
 - **Realistic seeds without 3,170 rows:** `additional_amount_cents` /
   `additional_donors_count` (JGive's own "additional donations" idea) absorb the offline
   remainder so totals match the live page exactly.
@@ -269,5 +269,5 @@ swallowed `.env.example`). Where it needed steering: it initially mislabeled the
 disproved it (plain React + webpack, CSR).
 
 Process docs (git-ignored under `tmp/`, copied to `docs/` for review):
-`docs/plan.md`, `docs/erd.md` (+ `docs/erd.png`), `docs/research/`. The full LLM transcript
-is included with the submission per deliverable #4.
+`docs/plan.md`, `docs/research/`. The full LLM transcript is included with the submission
+per deliverable #4.

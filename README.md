@@ -57,7 +57,7 @@ The short version — full reasoning in **[PLAN.md](PLAN.md#key-decisions--trade
 - **Pending counts toward progress** (the brief wants submit to move it) — isolated in one
   scope, a one-word switch to paid-only.
 - **Recurring = per-charge × term**; progress counts the installment, not the multi-year pledge.
-- **No `donors` table** (no accounts in scope) — clean upgrade path documented in `docs/erd.md`.
+- **No `donors` table** (no accounts in scope) — clean upgrade path (add `donors` + a nullable `donation.donor_id` later).
 - **Images via Active Storage** (mirrors JGive) → local disk in dev, **GCS** in production.
 - **Commission job** on each donation runs on **Active Job + Sidekiq/Redis** (off the request path).
 
@@ -66,7 +66,7 @@ The short version — full reasoning in **[PLAN.md](PLAN.md#key-decisions--trade
 ## What I'd do with more time
 
 - Real Stripe sandbox integration end-to-end (the [plan](PLAN.md#wiring-a-real-payment-provider-pending--paid)).
-- Accounts + a `donors` table (the ERD upgrade path) for dedupe and donor history.
+- Accounts + a `donors` table (the upgrade path) for dedupe and donor history.
 - A Vitest/React Testing Library component layer (currently covered by request + E2E specs).
 - `GraphQL::Dataloader` + cursor pagination if the schema grows.
 - An accessibility audit; Active Storage **variants** (`srcset`) once libvips is available.
@@ -81,7 +81,6 @@ The short version — full reasoning in **[PLAN.md](PLAN.md#key-decisions--trade
 | **[PLAN.md](PLAN.md)** | Architecture & the modernization story, full decisions, the payment plan, and deployment / infrastructure-as-code |
 | **[DEPLOY.md](DEPLOY.md)** | Step-by-step Railway deploy runbook — requirements, first-time provision, routine deploys, gotchas |
 | **[REQUIREMENTS.md](REQUIREMENTS.md)** | Functional & non-functional requirements, with status |
-| `docs/erd.md` (+ `erd.png`) | Data model + the no-`donors`-table rationale |
 | `docs/research/` | Reverse-engineering evidence (captured GraphQL ops, router fingerprint) |
 | `jgive-backend-home-assignment.md` | The original assignment brief |
 
