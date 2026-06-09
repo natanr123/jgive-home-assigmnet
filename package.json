@@ -18,6 +18,8 @@
     "@types/react": "^19.1.0",
     "@types/react-dom": "^19.1.0",
     "esbuild": "^0.25.0",
+    "railway": "^3.1.1",
+    "tsx": "^4.22.4",
     "typescript": "^5.8.0"
   }
 }

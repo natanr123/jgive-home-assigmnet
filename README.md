@@ -290,31 +290,33 @@ web + worker only when CI is green**. No manual `railway up` in the normal flow;
 one click in Railway. This is platform-native, CI-gated deployment — no bespoke deploy script
 or deploy-from-Actions token to maintain.
 
-**Two services from one image.** `bin/boot` picks the role from `PROCESS_TYPE` if set, else
-Railway's auto-injected `RAILWAY_SERVICE_NAME` (`web`/`worker`) — so on Railway nothing extra
-is set; off-Railway (Kamal/local) you'd set `PROCESS_TYPE=worker` explicitly.
-- **web** — Puma; the Railway domain targets port **3000** (the container runs non-root, so
-  it can't bind 80).
-- **worker** — service named `worker` → `bundle exec sidekiq`.
+**Infrastructure as code.** The whole project — services, databases, and variables — is
+declared in **`.railway/railway.ts`** (Railway's native IaC; needs the `railway` SDK + a TS
+loader, run via `NODE_OPTIONS=--import tsx`). Preview with `railway config plan`, apply with
+`railway config apply`. It's the source of truth — it replaces the per-service `railway.toml`
+(removed; rule: a service can't be managed by both).
 
-**Provision in the Railway project:** Postgres, and Redis with **`maxmemory-policy noeviction`**
-(Sidekiq requirement — eviction silently drops jobs).
+**Two services from one image:**
+- **web** — Puma (via `bin/boot`); the Railway domain targets port **3000** (the app binds a
+  fixed 3000 rather than Railway's `$PORT`, so no healthcheck — Railway would probe the wrong
+  port; binding `$PORT` is the follow-up that would re-enable one).
+- **worker** — explicit `start: "bundle exec sidekiq"` declared in `railway.ts`.
 
-**Environment variables** (set on *both* services):
+Both build the production `Dockerfile`, run `bin/rails db:prepare` as the pre-deploy command,
+and gate on CI (`checkSuites: true` = wait-for-CI). `bin/boot` still dispatches web/worker by
+`RAILWAY_SERVICE_NAME` (or `PROCESS_TYPE`) for the local / non-IaC path.
 
-| Var | Value |
-|---|---|
-| `RAILS_MASTER_KEY` | contents of `config/master.key` |
-| `DATABASE_URL` | `${{Postgres.DATABASE_URL}}` |
-| `REDIS_URL` | `${{Redis.REDIS_URL}}` |
-| `GCS_PROJECT` | `npcisland` |
-| `GCS_BUCKET` | `npcisland-jgive-storage` |
-| `GCS_KEYFILE_JSON` | the service-account key JSON (one line) |
+**Variables — deduped in `railway.ts`, not duplicated per service:**
+- `DATABASE_URL` / `REDIS_URL` → referenced from the `Postgres` / `Redis` resources.
+- `GCS_PROJECT` / `GCS_BUCKET` → shared consts.
+- `RAILS_MASTER_KEY` / `GCS_KEYFILE_JSON` → secrets kept **out of source** via `preserve()` on
+  `web` (set their real values once on the web service); the **worker references web's copy**
+  (`web.env.RAILS_MASTER_KEY`), so each value lives in exactly one place.
+- Redis: set **`maxmemory-policy noeviction`** (Sidekiq requirement — eviction drops jobs).
 
-Active Storage → GCS is wired in `config/storage.yml` (`:google`) and
-`config/initializers/gcs_credentials.rb`, which materialises `GCS_KEYFILE_JSON` into a
-keyfile for Application Default Credentials. Migrations run via Railway's pre-deploy
-command (`bin/rails db:prepare`, in `railway.toml`).
+Active Storage → GCS is wired in `config/storage.yml` (`:google`) +
+`config/initializers/gcs_credentials.rb`, which materialises `GCS_KEYFILE_JSON` into a keyfile
+for Application Default Credentials.
 
 **Alternatives:** the retained `Dockerfile` + **Kamal** config deploy to any container host
 / VPS; a Heroku-like PaaS mirrors JGive's real hosting. Solid Queue/Cache/Cable remain
