@@ -34,14 +34,15 @@ export default defineRailway(() => {
     source: repo,
     build: { builder: "DOCKERFILE" },
     preDeployCommand: "bin/rails db:prepare",
-    // No healthcheckPath: the app listens on a fixed 3000 (domain manually targets 3000),
-    // not Railway's $PORT, so Railway's healthcheck probes the wrong port and fails the
-    // deploy. A real healthcheck would require binding the server to $PORT — a separate change.
+    healthcheckPath: "/up",
     env: {
       DATABASE_URL: db.env.DATABASE_URL,
       REDIS_URL: cache.env.REDIS_URL,
       GCS_PROJECT,
       GCS_BUCKET,
+      // The app binds a fixed 3000; PORT tells Railway which port to route + healthcheck,
+      // so the /up healthcheck probes 3000 (where Puma is) and the deploy promotes.
+      PORT: "3000",
       RAILS_MASTER_KEY: preserve(),
       GCS_KEYFILE_JSON: preserve(),
     },

@@ -199,10 +199,14 @@ showed the exact diff (and caught a DB name-case mismatch that would have wiped 
 data) before any apply.
 
 **Two services from one image:**
-- **web** — Puma (via `bin/boot`); the Railway domain targets port **3000** (the app binds a
-  fixed 3000 rather than Railway's `$PORT`, so no healthcheck — Railway would probe the wrong
-  port; binding `$PORT` is the follow-up that would re-enable one).
-- **worker** — explicit `start: "bundle exec sidekiq"` declared in `railway.ts`.
+- **web** — Puma (via `bin/boot`) on a fixed port **3000**, with a **`/up` healthcheck**.
+  The app doesn't read Railway's `$PORT`, so `PORT=3000` is set explicitly — that tells Railway
+  which port to route *and* healthcheck, so `/up` is probed on 3000 (where Puma is) and the
+  deploy promotes. (Getting this wrong was a whole saga: a healthcheck on the wrong port fails
+  every deploy. The cleaner long-term form is to bind the server to `$PORT` directly.)
+- **worker** — explicit `start: "bundle exec sidekiq"` declared in `railway.ts`; no port, no
+  healthcheck. (Its service-level "config file" had to be cleared off `/railway.toml` before
+  `railway.ts` could manage it.)
 
 Both build the production `Dockerfile`, run `bin/rails db:prepare` as the pre-deploy command,
 and gate on CI (`checkSuites: true` = wait-for-CI). `bin/boot` still dispatches web/worker by

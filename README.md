@@ -70,7 +70,7 @@ The short version — full reasoning in **[PLAN.md](PLAN.md#key-decisions--trade
 - A Vitest/React Testing Library component layer (currently covered by request + E2E specs).
 - `GraphQL::Dataloader` + cursor pagination if the schema grows.
 - An accessibility audit; Active Storage **variants** (`srcset`) once libvips is available.
-- A web healthcheck (bind the server to Railway's `$PORT` first — see [deployment](PLAN.md#deployment--infrastructure-as-code)).
+- Bind the web server to Railway's `$PORT` (currently a fixed 3000 + `PORT=3000`) — see [deployment](PLAN.md#deployment--infrastructure-as-code).
 
 ---
 

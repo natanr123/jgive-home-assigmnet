@@ -6,7 +6,9 @@
 # explicitly, since RAILWAY_SERVICE_NAME won't exist (and would default to the web server).
 #   • "web" / anything but "worker" → the Puma web server, fronted by Thruster
 #   • "worker"                      → the Sidekiq worker that drains background jobs
-# Migrations are handled by railway.toml's preDeployCommand (bin/rails db:prepare).
+# Migrations run via the Railway pre-deploy command (bin/rails db:prepare), declared in
+# .railway/railway.ts. On Railway the worker's role is set by railway.ts (start command),
+# so this dispatch is mainly the local / non-Railway path.
 
 case "${PROCESS_TYPE:-${RAILWAY_SERVICE_NAME:-web}}" in
   worker)
