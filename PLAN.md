@@ -15,7 +15,7 @@ summary; this file holds the architecture, full decisions, payment plan, and dep
 
 ## Architecture & the modernization story
 
-JGive's live page (reverse-engineered — evidence in `docs/research/`):
+JGive's live page (reverse-engineered):
 
 | Layer | Theirs (verified) |
 |---|---|
@@ -257,7 +257,7 @@ adversarial multi-agent review passes over the plan.
 
 Approach: I reverse-engineered the live page first — captured its GraphQL operations and
 responses, fingerprinted the router from `history.state`, and pixel-sampled the brand
-colors (artifacts in `docs/research/`). I wrote a plan, had AI judge panels critique it
+colors. I wrote a plan, had AI judge panels critique it
 (assignment-fit / Rails / React / feasibility) and folded the findings back in, then built
 in commit-sized milestones, verifying each in a real browser before committing.
 
@@ -268,6 +268,4 @@ swallowed `.env.example`). Where it needed steering: it initially mislabeled the
 "Next.js SSR" from the URL shape — I had it verify against the actual bundle, which
 disproved it (plain React + webpack, CSR).
 
-Process docs (git-ignored under `tmp/`, copied to `docs/` for review):
-`docs/plan.md`, `docs/research/`. The full LLM transcript is included with the submission
-per deliverable #4.
+The full LLM transcript is included with the submission per deliverable #4.

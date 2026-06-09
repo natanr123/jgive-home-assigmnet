@@ -81,7 +81,6 @@ The short version — full reasoning in **[PLAN.md](PLAN.md#key-decisions--trade
 | **[PLAN.md](PLAN.md)** | Architecture & the modernization story, full decisions, the payment plan, and deployment / infrastructure-as-code |
 | **[DEPLOY.md](DEPLOY.md)** | Step-by-step Railway deploy runbook — requirements, first-time provision, routine deploys, gotchas |
 | **[REQUIREMENTS.md](REQUIREMENTS.md)** | Functional & non-functional requirements, with status |
-| `docs/research/` | Reverse-engineering evidence (captured GraphQL ops, router fingerprint) |
 | `jgive-backend-home-assignment.md` | The original assignment brief |
 
 ---
@@ -89,7 +88,7 @@ The short version — full reasoning in **[PLAN.md](PLAN.md#key-decisions--trade
 ## Setup & AI workflow
 
 Built with **Claude Code** (Opus) + the **Playwright MCP**. I reverse-engineered the live
-page first (GraphQL ops, router fingerprint, brand colors → `docs/research/`), had AI judge
+page first (GraphQL ops, router fingerprint, brand colors), had AI judge
 panels critique the plan, then built in commit-sized milestones, verifying each in a real
 browser. Deployment was driven through the Railway CLI and declared as code in
 `.railway/railway.ts`. Full write-up in
