@@ -79,6 +79,7 @@ The short version — full reasoning in **[PLAN.md](docs/PLAN.md#key-decisions--
 | File | What |
 |---|---|
 | **[PLAN.md](docs/PLAN.md)** | Architecture & the modernization story, full decisions, the payment plan, and deployment / infrastructure-as-code |
+| **[MODELS.md](docs/MODELS.md)** | The data model — `CharityOrganization → Campaign → Donation`, fields, enums, and relationships |
 | **[DEPLOY.md](docs/DEPLOY.md)** | Step-by-step Railway deploy runbook — requirements, first-time provision, routine deploys, gotchas |
 | **[REQUIREMENTS.md](docs/REQUIREMENTS.md)** | Functional & non-functional requirements, with status |
 | **[jgive-backend-home-assignment.md](docs/jgive-backend-home-assignment.md)** | The original assignment brief |
