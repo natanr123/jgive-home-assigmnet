@@ -75,7 +75,7 @@ A fundraising campaign — the page a donor lands on (`campaigns`).
 ## Donation
 
 A single donation against a campaign (`donations`). Created in `pending`; payment is out of
-scope (see [PLAN.md → payment plan](PLAN.md#wiring-a-real-payment-provider-pending--paid)).
+scope (see [PAYMENT.md](PAYMENT.md)).
 
 | Column | Type | Notes |
 |---|---|---|

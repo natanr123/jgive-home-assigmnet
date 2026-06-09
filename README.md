@@ -42,7 +42,7 @@ npm run e2e           # Playwright end-to-end
 - **Donation flow** (URL-routed modal): amount (presets + custom, one-time vs **recurring**
   with a months term), display preference (full name / first name / anonymous), optional
   dedication. Submitting **creates a `pending` donation and updates the campaign's progress**
-  — no payment (see the [payment plan](docs/PLAN.md#wiring-a-real-payment-provider-pending--paid)).
+  — no payment (see the [payment plan](docs/PAYMENT.md)).
 - **Seeds:** the real campaign + donors, reconciled to the live totals (₪993,188 / 3,170);
   plus a second synthetic campaign.
 
@@ -66,7 +66,7 @@ The short version — full reasoning in **[PLAN.md](docs/PLAN.md#key-decisions--
 
 ## What I'd do with more time
 
-- Real Stripe sandbox integration end-to-end (the [plan](docs/PLAN.md#wiring-a-real-payment-provider-pending--paid)).
+- Real Stripe sandbox integration end-to-end (the [plan](docs/PAYMENT.md)).
 - Accounts + a `donors` table (the upgrade path) for dedupe and donor history.
 - A Vitest/React Testing Library component layer (currently covered by request + E2E specs).
 - `GraphQL::Dataloader` + cursor pagination if the schema grows.
@@ -79,8 +79,9 @@ The short version — full reasoning in **[PLAN.md](docs/PLAN.md#key-decisions--
 
 | File | What |
 |---|---|
-| **[PLAN.md](docs/PLAN.md)** | Architecture & the modernization story, full decisions, the payment plan, and deployment / infrastructure-as-code |
+| **[PLAN.md](docs/PLAN.md)** | Architecture & the modernization story, full decisions, and deployment / infrastructure-as-code |
 | **[MODELS.md](docs/MODELS.md)** | The data model — `CharityOrganization → Campaign → Donation`, fields, enums, and relationships |
+| **[PAYMENT.md](docs/PAYMENT.md)** | How I'd wire a real payment provider and move a donation `pending → paid` (Stripe, idempotency, webhook) |
 | **[DEPLOY.md](docs/DEPLOY.md)** | Step-by-step Railway deploy runbook — requirements, first-time provision, routine deploys, gotchas |
 | **[RAILWAY-CONFIGURATION.md](docs/RAILWAY-CONFIGURATION.md)** | Railway infrastructure-as-code reference — `railway.ts` and the `railway config` commands (with the project diagram) |
 | **[railway-diagram.png](docs/railway-diagram.png)** | Railway project canvas — `web` + `worker` services wired to Postgres + Redis |
