@@ -6,6 +6,7 @@ campaign **"הגן הכתום"**) — what a donor sees and interacts with, up t
 payment. **Rails 8 + GraphQL backend serving a React 19 SPA**, RTL Hebrew throughout.
 
 **Live:** **https://web-production-bdbd1.up.railway.app** ·
+**Sidekiq dashboard:** https://web-production-bdbd1.up.railway.app/sidekiq ·
 **Source:** https://github.com/natanr123/jgive-home-assigmnet
 
 ---
