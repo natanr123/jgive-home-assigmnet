@@ -216,8 +216,14 @@ and gate on CI (`checkSuites: true` = wait-for-CI). `bin/boot` still dispatches 
 - `DATABASE_URL` / `REDIS_URL` → referenced from the `Postgres` / `Redis` resources.
 - `GCS_PROJECT` / `GCS_BUCKET` → shared consts.
 - `RAILS_MASTER_KEY` / `GCS_KEYFILE_JSON` → secrets kept **out of source** via `preserve()` on
-  `web` (set their real values once on the web service); the **worker references web's copy**
-  (`web.env.RAILS_MASTER_KEY`), so each value lives in exactly one place.
+  `web` (so `railway.ts` declares them but never stores the values); the **worker references
+  web's copy** (`web.env.RAILS_MASTER_KEY`), so each value lives in exactly one place. Set the
+  two secret *values* once, directly on the `web` service (piped from their canonical sources,
+  never echoed):
+  ```bash
+  railway variables --service web --set-from-stdin RAILS_MASTER_KEY < config/master.key
+  railway variables --service web --set-from-stdin GCS_KEYFILE_JSON < ~/.config/gcloud-keys/<key>.json
+  ```
 - Redis: set **`maxmemory-policy noeviction`** (Sidekiq requirement — eviction drops jobs).
 
 Active Storage → GCS is wired in `config/storage.yml` (`:google`) +
