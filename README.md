@@ -81,7 +81,7 @@ The short version — full reasoning in **[PLAN.md](PLAN.md#key-decisions--trade
 | **[PLAN.md](PLAN.md)** | Architecture & the modernization story, full decisions, the payment plan, and deployment / infrastructure-as-code |
 | **[DEPLOY.md](DEPLOY.md)** | Step-by-step Railway deploy runbook — requirements, first-time provision, routine deploys, gotchas |
 | **[REQUIREMENTS.md](REQUIREMENTS.md)** | Functional & non-functional requirements, with status |
-| `jgive-backend-home-assignment.md` | The original assignment brief |
+| **[jgive-backend-home-assignment.md](jgive-backend-home-assignment.md)** | The original assignment brief |
 
 ---
 
