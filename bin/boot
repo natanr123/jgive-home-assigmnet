@@ -1,12 +1,14 @@
 #!/bin/bash -e
 
-# One image, two roles. Railway runs this app as two services from the same build; the
-# CLI can't set a per-service start command, so we dispatch on PROCESS_TYPE instead:
-#   • (unset / "web") → the Puma web server, fronted by Thruster
-#   • "worker"        → the Sidekiq worker that drains background jobs
+# One image, two roles. Each service runs the same build; the role is taken from
+# PROCESS_TYPE if set, otherwise Railway's auto-injected RAILWAY_SERVICE_NAME (web/worker)
+# — so on Railway no extra var is needed. Off-Railway (Kamal/local) set PROCESS_TYPE
+# explicitly, since RAILWAY_SERVICE_NAME won't exist (and would default to the web server).
+#   • "web" / anything but "worker" → the Puma web server, fronted by Thruster
+#   • "worker"                      → the Sidekiq worker that drains background jobs
 # Migrations are handled by railway.toml's preDeployCommand (bin/rails db:prepare).
 
-case "${PROCESS_TYPE:-web}" in
+case "${PROCESS_TYPE:-${RAILWAY_SERVICE_NAME:-web}}" in
   worker)
     exec bundle exec sidekiq
     ;;

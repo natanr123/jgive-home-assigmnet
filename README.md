@@ -290,11 +290,12 @@ web + worker only when CI is green**. No manual `railway up` in the normal flow;
 one click in Railway. This is platform-native, CI-gated deployment — no bespoke deploy script
 or deploy-from-Actions token to maintain.
 
-**Two services from one image** (`bin/boot` dispatches on `PROCESS_TYPE`, since the CLI
-can't set a per-service start command):
+**Two services from one image.** `bin/boot` picks the role from `PROCESS_TYPE` if set, else
+Railway's auto-injected `RAILWAY_SERVICE_NAME` (`web`/`worker`) — so on Railway nothing extra
+is set; off-Railway (Kamal/local) you'd set `PROCESS_TYPE=worker` explicitly.
 - **web** — Puma; the Railway domain targets port **3000** (the container runs non-root, so
   it can't bind 80).
-- **worker** — `PROCESS_TYPE=worker` → `bundle exec sidekiq`.
+- **worker** — service named `worker` → `bundle exec sidekiq`.
 
 **Provision in the Railway project:** Postgres, and Redis with **`maxmemory-policy noeviction`**
 (Sidekiq requirement — eviction silently drops jobs).
