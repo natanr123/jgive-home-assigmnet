@@ -1,7 +1,7 @@
 # Requirements
 
-Requirements for the JGive campaign donation page reproduction. Derived from the brief
-(`tmp/prompots/jgive-backend-home-assignment.md`) and the live reference
+Requirements for the JGive campaign donation page reproduction. Derived from the
+[brief](jgive-backend-home-assignment.md) and the live reference
 ([donation-targets/159183](https://www.jgive.com/new/he/ils/donation-targets/159183)).
 
 **Legend:** ✅ done · 🟡 partial / demo-level · ⛔ out of scope (per brief) · ➕ beyond the

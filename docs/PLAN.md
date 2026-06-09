@@ -1,6 +1,6 @@
 # Plan & deep-dive — הגן הכתום / JGive donation page
 
-The detailed reasoning behind the build. The [README](README.md) is the quick start and
+The detailed reasoning behind the build. The [README](../README.md) is the quick start and
 summary; this file holds the architecture, full decisions, payment plan, and deployment.
 
 - [Architecture & the modernization story](#architecture--the-modernization-story)
