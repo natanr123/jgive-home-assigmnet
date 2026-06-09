@@ -79,6 +79,7 @@ The short version — full reasoning in **[PLAN.md](PLAN.md#key-decisions--trade
 | File | What |
 |---|---|
 | **[PLAN.md](PLAN.md)** | Architecture & the modernization story, full decisions, the payment plan, and deployment / infrastructure-as-code |
+| **[DEPLOY.md](DEPLOY.md)** | Step-by-step Railway deploy runbook — requirements, first-time provision, routine deploys, gotchas |
 | **[REQUIREMENTS.md](REQUIREMENTS.md)** | Functional & non-functional requirements, with status |
 | `docs/erd.md` (+ `erd.png`) | Data model + the no-`donors`-table rationale |
 | `docs/research/` | Reverse-engineering evidence (captured GraphQL ops, router fingerprint) |
