@@ -2,31 +2,11 @@
 
 A reproduction of the live JGive campaign donation page
 ([donation-targets/159183](https://www.jgive.com/new/he/ils/donation-targets/159183),
-campaign **"הגן הכתום"**) — the part a donor sees and interacts with, up to (but not
-including) payment.
+campaign **"הגן הכתום"**) — what a donor sees and interacts with, up to (but not including)
+payment. **Rails 8 + GraphQL backend serving a React 19 SPA**, RTL Hebrew throughout.
 
-Built as a **Rails 8 + GraphQL backend serving a React 19 + React Router v7 SPA** — the
-same shape as JGive's real production app, with the Router v5→v7 modernization they have
-not shipped. RTL Hebrew throughout.
-
-### Live URLs
-
-Deployed on **Railway** (web + Sidekiq worker + Postgres + Redis; uploads on Google Cloud
-Storage) — see [Deployment](#deployment).
-
-| What | URL |
-|---|---|
-| **App** (redirects to the campaign) | https://web-production-bdbd1.up.railway.app |
-| Campaign page | https://web-production-bdbd1.up.railway.app/campaigns/1 |
-| Donate flow (modal) | https://web-production-bdbd1.up.railway.app/campaigns/1/donate/amount |
-| Campaign edit (beyond brief) | https://web-production-bdbd1.up.railway.app/campaigns/1/edit |
-| GraphQL endpoint | https://web-production-bdbd1.up.railway.app/graphql |
-| Health check | https://web-production-bdbd1.up.railway.app/up |
-| Sidekiq dashboard | https://web-production-bdbd1.up.railway.app/sidekiq |
-| Source (GitHub) | https://github.com/natanr123/jgive-home-assigmnet |
-
-The **Sidekiq dashboard** is open (unauthenticated) — it's a demo; a real deployment would
-gate it behind admin auth.
+**Live:** **https://web-production-bdbd1.up.railway.app** ·
+**Source:** https://github.com/natanr123/jgive-home-assigmnet
 
 ---
 
@@ -35,313 +15,83 @@ gate it behind admin auth.
 **Prerequisites:** Ruby 3.4.7, Node 20+, Docker (for Postgres + Redis).
 
 ```bash
-cp .env.example .env          # local DB + Redis config (consumed by compose AND Rails)
-docker compose up -d          # Postgres 17 (:5432) + Redis 7 (:6379), healthchecked
-bin/setup                     # bundle + npm install + build + db:prepare + db:seed, then bin/dev
+cp .env.example .env     # local DB + Redis config
+docker compose up -d     # Postgres 17 + Redis 7
+bin/setup                # bundle + npm install + build + db:prepare + db:seed, then bin/dev
 ```
 
-`bin/setup` ends by launching `bin/dev`, which runs **all three** processes from
-`Procfile.dev` — Puma (web), esbuild (`js`, `--watch`), and **Sidekiq (`worker`)**.
-Then open **http://localhost:3000** — `/` redirects to the seeded campaign.
-
+`bin/setup` ends by launching **`bin/dev`** (Puma + esbuild watch + Sidekiq worker via
+`Procfile.dev`). Open **http://localhost:3000** — `/` redirects to the seeded campaign.
 Already set up? Just `bin/dev`.
 
-### The background queue (Sidekiq)
-
-`bin/dev` already starts the Sidekiq worker, so the commission job runs automatically.
-To run (or restart) the worker on its own:
-
 ```bash
-bundle exec sidekiq           # needs Redis up (docker compose up -d) and a .env
-```
-
-The Sidekiq dashboard — queues, processed/failed counts, retries — is at
-**http://localhost:3000/sidekiq** (unauthenticated; protect behind admin in production).
-Without a running worker, donations are still created and jobs just sit in Redis until a
-worker drains them.
-
-### Tests
-
-```bash
-bundle exec rspec     # Ruby: models + GraphQL request specs
-npm run typecheck     # TypeScript (esbuild strips types; this is the real check)
+bundle exec rspec     # models + GraphQL request specs
+npm run typecheck     # TypeScript
 npm run build         # build the SPA bundle (prereq for E2E)
-npm run e2e           # Playwright end-to-end (starts/​reuses the server, waits on /up)
+npm run e2e           # Playwright end-to-end
 ```
 
 ---
 
-## What's here
+## What's built
 
-- **Campaign page** (RTL, tabs): hero cover, progress (raised / goal / % / donor count
-  with the orange-heart marker), donate CTA, and tabs mirroring the original —
-  **על הפרויקט** (story + charity card), **תרומות אחרונות** (donor cards, load-more),
-  **על העמותה**; ambassadors/groups/updates are disabled stubs (see [cuts](#deliberate-scope-cuts)).
-- **Donation flow** (URL-routed modal): amount step (presets + custom, one-time vs
-  recurring, optional comment, display preference) → details step → submit. Submitting
-  **creates a `pending` donation and updates the campaign's progress**. No payment.
-- **Seeds:** the real campaign with real story/charity copy and donor entries, reconciled
-  to the live totals (₪993,188 / 3,170 donors); plus a second synthetic campaign.
-
----
-
-## Architecture & the modernization story
-
-JGive's live page (reverse-engineered — evidence in `docs/research/`):
-
-| Layer | Theirs (verified) |
-|---|---|
-| Frontend | React **18+ SPA, client-side rendered** (CRA/webpack, CSS modules) — not Next.js, no SSR |
-| Routing | **React Router v5-era** (`history@4`; `history.state` is `{key}`, no v6 `usr/idx`) |
-| API | **GraphQL** at same-origin `/graphql` |
-| Backend | **Ruby on Rails** + Active Storage, on Heroku behind Cloudflare |
-
-We reproduce that **Rails-serves-React-SPA-+-GraphQL** shape and **modernize the router**
-(the v5→v7 jump their shipped bundle hasn't made — a claim bounded to the deployed bundle,
-not their codebase):
-
-| Theirs (v5-era) | Ours (React Router v7 data router) |
-|---|---|
-| `BrowserRouter` + `<Switch>` | `createBrowserRouter` + `RouterProvider` (from `react-router/dom`) |
-| Data fetching in components | **Route loaders** (`campaign` loads before render) |
-| Imperative submit + manual progress re-query | **Route action** → `redirect` → **automatic loader revalidation** updates progress |
-| URL-routed modal steps, re-wired per step | **Nested routes** in a native `<dialog>`; wizard state in **URL search params** (survives refresh/deep-link) |
-| Apollo client cache | **None** — loaders/actions + router revalidation is the cache-invalidation strategy; a ~20-line `gqlFetch` replaces a client library |
-
-**Is this over-built for a take-home?** The brief says "small Rails app" and "judgment over
-completeness". It is one Rails app — it owns the domain, data, API, and serves everything;
-React only replaces the view layer, exactly as in JGive's production app. Deliberately
-**not** added: Apollo, Redux, an i18n framework, Vite, SSR. A Hotwire monolith was the
-considered alternative (simpler, but it showcases less of the real architecture and the
-modernization story). The pivot was made because the brief explicitly values *how* I work
-with AI and *judgment* over raw build speed.
-
-The GraphQL surface is deliberately tiny — **2 queries + 1 mutation** — converging the
-**~7 operations** JGive fires for this one page:
-
-| Theirs | Ours |
-|---|---|
-| `GetDonationTarget` + `GetCampaignBannerDonationTarget` + `GetDonationTargetTabs` | `campaign(id)` |
-| `GetRecentDonations` | `recentDonations(campaignId, page, perPage)` |
-| `CharityMetrics`, `CurrentEmployee`, `I18n` | cut (no metrics / accounts / server i18n) |
-| donation/payment mutations | `createDonation` → `pending` |
-
-(graphql-ruby itself is *inferred* — a Rails backend makes it the overwhelmingly likely
-gem; server-side gems aren't observable from outside.)
+- **Campaign page** (RTL, tabs): hero cover, progress (raised / goal / % / donor count),
+  donate CTA, and tabs mirroring the original — story + charity card, recent donations
+  (load-more), about-the-charity.
+- **Donation flow** (URL-routed modal): amount (presets + custom, one-time vs **recurring**
+  with a months term), display preference (full name / first name / anonymous), optional
+  dedication. Submitting **creates a `pending` donation and updates the campaign's progress**
+  — no payment (see the [payment plan](PLAN.md#wiring-a-real-payment-provider-pending--paid)).
+- **Seeds:** the real campaign + donors, reconciled to the live totals (₪993,188 / 3,170);
+  plus a second synthetic campaign.
 
 ---
 
 ## Key decisions & trade-offs
 
-- **Money is integer cents** (`amount_cents`, `goal_amount_cents`) with a `currency`
-  string — JGive's own convention; no float money, no money gem at this size.
-- **Pending counts toward progress.** The brief says submitting must update progress, so
-  `Donation.countable` = `pending + paid`. It's isolated in one scope — paid-only is a
-  one-word change. Pending donations also appear in the public list, **labeled**
-  "ממתין לאישור" (the `pending` boolean is the only status the API exposes; the raw enum
-  never leaks). In production you'd count paid only, hide pending from the feed, and
-  rate-limit `createDonation` behind the payment intent.
-- **Recurring (standing order) = per-charge amount × term.** `amount_cents` is the
-  *monthly* charge; a nullable `recurring_months` (1–36, JGive's `maxRecurringMonths`)
-  holds the term, and `Donation#total_cents` is the donor-facing commitment shown in the
-  modal (`"N × ₪amount"`, total `"סה"כ"`). **Progress counts the per-charge installment**
-  (the money moving now), not the multi-year pledge — isolated as a one-line switch in
-  `Campaign#stats`, the same way `countable` is. The term is required+bounded for monthly
-  and normalized to `nil` for one-time; the wizard guards a deep-link that arrives monthly
-  without a term by bouncing back to the amount step.
-- **Donor display name resolved server-side** from the display preference
-  (full name / first name only / anonymous → `null`), mirroring JGive's `name: null`.
-  The DB column is `comment` (matches their field + the UI label "הערה"); it implements
-  the brief's "dedication message".
-- **No `donors` table.** Without accounts (out of scope) there's no identity key to dedupe
-  on, and the card data is a per-donation snapshot. Clean upgrade path: add `donors` +
-  nullable `donation.donor_id` later. (Full rationale in `docs/erd.md`.)
-- **Realistic seeds without 3,170 rows:** `additional_amount_cents` /
-  `additional_donors_count` (JGive's own "additional donations" idea) absorb the offline
-  remainder so totals match the live page exactly.
-- **Background jobs via Active Job on Sidekiq** (Redis-backed): creating a donation
-  enqueues `CalcCommissionJob` (an Active Job; `queue_adapter = :sidekiq`) via
-  `after_create_commit` — after-commit so the worker, in its own process, sees the
-  committed row — which sets `commission_cents` to 10% of the amount. Redis is in
-  docker-compose; `bin/dev` runs a `worker` (Sidekiq) process alongside web + esbuild;
-  the Sidekiq dashboard is mounted at **`/sidekiq`** (no auth — protect behind admin in
-  production). Tests use Active Job's `:test` adapter (no Redis); the enqueue spec runs
-  non-transactionally so `after_commit` actually fires. *(Not in the brief — a
-  background-processing demo.)*
-- **Images via Active Storage** (mirrors JGive): campaign `banner` + `story_images` and
-  charity `avatar` are attachments; GraphQL resolves them to relative
-  `/rails/active_storage/blobs/redirect/...` URLs (`only_path: true`, so no host config) —
-  the same URL shape JGive serves. Story HTML stores stable `campaigns/story/N.jpg` tokens
-  rewritten to blob URLs by attachment order at read time. Seeds attach committed source
-  images from `db/seeds/data/images/` (idempotently). No image variants (libvips isn't
-  installed here) — originals are served; variants are a drop-in upgrade.
-- **HTML sanitized at read time** (GraphQL resolver, allowlisted tags) so stored content
-  stays raw and the allowlist can evolve without re-seeding.
-- **CSRF:** token model (`protect_from_forgery :exception` + `csrf_meta_tags`); `gqlFetch`
-  sends `X-CSRF-Token`. No `null_session`.
-- **Conventional Rails routes** (`/campaigns/:id`) over JGive's custom `/donation-targets`.
-- **npm over the scaffold's yarn** (corepack needs root here; npm ships with Node — less
-  reviewer friction).
-- **Solid Queue/Cache/Cable** stay (Rails 8 defaults) but are unused; deploy would
-  provision their DBs or switch adapters.
+The short version — full reasoning in **[PLAN.md](PLAN.md#key-decisions--trade-offs)**.
 
----
-
-## TODO: wire a real payment provider (pending → paid)
-
-Out of scope per the brief — submitting only creates a `pending` donation. Here's how I'd
-take it to `paid`. I'll use **Stripe** for concreteness, but keep it behind a
-provider-agnostic seam so the backend isn't Stripe-specific.
-
-- [ ] **Provider port.** A `Payments::Provider` (`create_intent`,
-  `verify_webhook`) with a `Payments::StripeProvider` adapter, so nothing outside the
-  adapter depends on Stripe and a second method (e.g. Israeli **bit** via PayMe, which
-  JGive also uses) can be added later. **Where it lives:** `app/services/payments/`
-  (`provider.rb`, `stripe_provider.rb`, `handle_webhook.rb` → the `Payments::` namespace;
-  `app/services` is the Zeitwerk root) + a thin `StripeWebhooksController`. The GraphQL
-  mutation and the webhook controller talk to `Payments::Provider`, never to Stripe
-  directly.
-
-- [ ] **Start payment on submit (outbound, with an idempotency key).** `createDonation`
-  still creates the `pending` donation, then creates a **PaymentIntent** for its
-  `amount_cents` (amount set server-side, never trusted from the client) and returns the
-  `client_secret`. The create call passes a deterministic **`Idempotency-Key`**
-  (e.g. `intent:donation:<id>`) so a retried request can't create a second intent →
-  no double charge.
-
-- [ ] **Collect payment in the modal (best UX).** Render Stripe's **Payment Element**
-  inside the existing donate modal (`<Elements clientSecret>` → `<PaymentElement>` →
-  `stripe.confirmPayment({ return_url })`). Card stays in-flow (no redirect); 3-D Secure
-  and redirect-based methods like bit still hand off as needed. Card fields live in
-  Stripe's iframes → PCI SAQ A (card data never touches our server).
-
-- [ ] **Webhook endpoint = source of truth.** `POST /webhooks/stripe`
-  (`StripeWebhooksController`, CSRF-skipped — Stripe authenticates via signature):
-  - read the **raw body**, **verify the `Stripe-Signature`** with the endpoint secret;
-  - **dedupe inbound by `event.id`** (unique index) — Stripe may redeliver the same event;
-  - on `payment_intent.succeeded` → `donation.update!(status: :paid, completed_at: Time.current)`
-    (event-id record + update in one transaction); on `payment_intent.payment_failed` /
-    `checkout.session.expired` → `:failed`;
-  - return **2xx fast**; run side effects (receipt email, re-run `CalcCommissionJob`) async.
-
-  The browser redirect/return is only UX — the **webhook** is authoritative, since the tab
-  can close before returning.
-
-- [ ] **Two idempotency guards, different directions:** the outbound `Idempotency-Key`
-  prevents a duplicate **charge**; the inbound `event.id` store prevents applying the same
-  confirmation twice (double `paid`, double email/commission).
-
-- [ ] **Recurring** → Stripe subscription mode, capped by a `max_recurring_months`-style
-  setting (JGive exposes `maxRecurringMonths: 36`).
-
-- [ ] **Tighten the demo policy:** switch `Donation.countable` to **paid-only** (one-line
-  change already isolated in the model) so pending donations stop counting publicly, and
-  rate-limit `createDonation` (Rack::Attack).
-
-**Why this needs almost no new modeling:** the `Donation` `status` enum
-(`pending/paid/failed`) + `completed_at` already exist, and progress is **computed** from
-`countable` — so flipping a donation to `paid` is reflected automatically, nothing else to
-update. Local testing: the Stripe CLI (`stripe listen --forward-to localhost:3000/webhooks/stripe`,
-`stripe trigger payment_intent.succeeded`).
-
----
-
-## Deliberate scope cuts
-
-Per brief: no payment/checkout, no accounts/login/admin, no production hardening. Also cut
-(and why): ambassadors/groups/updates tabs (whole product features — disabled stubs),
-multi-currency & locale switcher (ILS/he only; the tax-flags row is visual), recurring
-**billing mechanics** (the one-time/recurring *choice* is a working stored field), the
-site's "amount-hidden" privacy axis (the brief defines its own three options), donations
-search/sort (load-more only), עיגול לטובה, video hero, heart counts. SSR is not attempted
-(their page is CSR too); our shell at least serves a real title/meta.
+- **Same stack as JGive** — Rails + GraphQL + a React SPA — *plus* the React Router v5→v7
+  modernization their shipped bundle hasn't made. ([why](PLAN.md#architecture--the-modernization-story))
+- **Money as integer cents**; **GraphQL kept tiny** (2 queries + 1 mutation).
+- **Pending counts toward progress** (the brief wants submit to move it) — isolated in one
+  scope, a one-word switch to paid-only.
+- **Recurring = per-charge × term**; progress counts the installment, not the multi-year pledge.
+- **No `donors` table** (no accounts in scope) — clean upgrade path documented in `docs/erd.md`.
+- **Images via Active Storage** (mirrors JGive) → local disk in dev, **GCS** in production.
+- **Commission job** on each donation runs on **Active Job + Sidekiq/Redis** (off the request path).
 
 ---
 
 ## What I'd do with more time
 
-- Real Stripe sandbox integration end-to-end (the wiring above).
-- Accounts + a `donors` table (the ERD upgrade path), enabling dedupe and donor history.
+- Real Stripe sandbox integration end-to-end (the [plan](PLAN.md#wiring-a-real-payment-provider-pending--paid)).
+- Accounts + a `donors` table (the ERD upgrade path) for dedupe and donor history.
 - A Vitest/React Testing Library component layer (currently covered by request + E2E specs).
-- `GraphQL::Dataloader` if the schema grows; cursor pagination for donations.
-- The site's amount-hidden privacy mode; donations search/sort/filter.
-- An accessibility audit pass; Active Storage **variants** (resize/`srcset`) once libvips
-  is available, and **image upload** on the edit page (multipart) so cover/story images
-  are editable — matching JGive's upload-backed media; Action Text for the story.
-- SSR via Inertia or RR framework-mode (trade-offs vs the Rails backend).
+- `GraphQL::Dataloader` + cursor pagination if the schema grows.
+- An accessibility audit; Active Storage **variants** (`srcset`) once libvips is available.
+- A web healthcheck (bind the server to Railway's `$PORT` first — see [deployment](PLAN.md#deployment--infrastructure-as-code)).
 
 ---
 
-## Deployment
+## Docs
 
-**Live on Railway: https://web-production-bdbd1.up.railway.app** (managed Postgres + Redis
-+ a separate Sidekiq worker, warm instances so the link responds immediately). Deploys from
-the production `Dockerfile`; assets precompile via esbuild + propshaft. Production runs jobs
-on **Sidekiq/Redis** (matching dev) and stores uploads on **Google Cloud Storage**.
-
-**Initial provisioning** was done through the **Railway CLI** (`@railway/cli`): `init` →
-`add --database postgres/redis` → `add --service web|worker` → `variables` (secrets piped
-via stdin) → `up` → `domain`.
-
-**Continuous deployment (current):** both services are connected to the GitHub repo
-(`natanr123/jgive-home-assigmnet`, branch `main`) with **"Wait for CI" enabled**. So a push
-to `main` → GitHub Actions runs `ci.yml` (scan / lint / RSpec / E2E) → Railway **auto-deploys
-web + worker only when CI is green**. No manual `railway up` in the normal flow; rollbacks are
-one click in Railway. This is platform-native, CI-gated deployment — no bespoke deploy script
-or deploy-from-Actions token to maintain.
-
-**Infrastructure as code.** The whole project — services, databases, and variables — is
-declared in **`.railway/railway.ts`** (Railway's native IaC; needs the `railway` SDK + a TS
-loader, run via `NODE_OPTIONS=--import tsx`). Preview with `railway config plan`, apply with
-`railway config apply`. It's the source of truth — it replaces the per-service `railway.toml`
-(removed; rule: a service can't be managed by both).
-
-**Two services from one image:**
-- **web** — Puma (via `bin/boot`); the Railway domain targets port **3000** (the app binds a
-  fixed 3000 rather than Railway's `$PORT`, so no healthcheck — Railway would probe the wrong
-  port; binding `$PORT` is the follow-up that would re-enable one).
-- **worker** — explicit `start: "bundle exec sidekiq"` declared in `railway.ts`.
-
-Both build the production `Dockerfile`, run `bin/rails db:prepare` as the pre-deploy command,
-and gate on CI (`checkSuites: true` = wait-for-CI). `bin/boot` still dispatches web/worker by
-`RAILWAY_SERVICE_NAME` (or `PROCESS_TYPE`) for the local / non-IaC path.
-
-**Variables — deduped in `railway.ts`, not duplicated per service:**
-- `DATABASE_URL` / `REDIS_URL` → referenced from the `Postgres` / `Redis` resources.
-- `GCS_PROJECT` / `GCS_BUCKET` → shared consts.
-- `RAILS_MASTER_KEY` / `GCS_KEYFILE_JSON` → secrets kept **out of source** via `preserve()` on
-  `web` (set their real values once on the web service); the **worker references web's copy**
-  (`web.env.RAILS_MASTER_KEY`), so each value lives in exactly one place.
-- Redis: set **`maxmemory-policy noeviction`** (Sidekiq requirement — eviction drops jobs).
-
-Active Storage → GCS is wired in `config/storage.yml` (`:google`) +
-`config/initializers/gcs_credentials.rb`, which materialises `GCS_KEYFILE_JSON` into a keyfile
-for Application Default Credentials.
-
-**Alternatives:** the retained `Dockerfile` + **Kamal** config deploy to any container host
-/ VPS; a Heroku-like PaaS mirrors JGive's real hosting. Solid Queue/Cache/Cable remain
-available as a Redis-free fallback (swap the adapters in `config/environments/production.rb`).
+| File | What |
+|---|---|
+| **[PLAN.md](PLAN.md)** | Architecture & the modernization story, full decisions, the payment plan, and deployment / infrastructure-as-code |
+| **[REQUIREMENTS.md](REQUIREMENTS.md)** | Functional & non-functional requirements, with status |
+| `docs/erd.md` (+ `erd.png`) | Data model + the no-`donors`-table rationale |
+| `docs/research/` | Reverse-engineering evidence (captured GraphQL ops, router fingerprint) |
+| `jgive-backend-home-assignment.md` | The original assignment brief |
 
 ---
 
-## Setup, thought process & AI workflow
+## Setup & AI workflow
 
-Tools: **Claude Code** (Opus) with the **Playwright MCP** for reverse-engineering, plus
-adversarial multi-agent review passes over the plan.
-
-Approach: I reverse-engineered the live page first — captured its GraphQL operations and
-responses, fingerprinted the router from `history.state`, and pixel-sampled the brand
-colors (artifacts in `docs/research/`). I wrote a plan, had AI judge panels critique it
-(assignment-fit / Rails / React / feasibility) and folded the findings back in, then built
-in commit-sized milestones, verifying each in a real browser before committing.
-
-Where AI helped: the broad reverse-engineering sweep, catching real bugs in the plan before
-coding (e.g. `RouterProvider` must import from `react-router/dom`; `location.state` would
-break a mid-flow refresh → switched to URL search params; the `.gitignore` would have
-swallowed `.env.example`). Where it needed steering: it initially mislabeled the stack as
-"Next.js SSR" from the URL shape — I had it verify against the actual bundle, which
-disproved it (plain React + webpack, CSR).
-
-Process docs (git-ignored under `tmp/`, copied to `docs/` for review):
-`docs/plan.md`, `docs/erd.md` (+ `docs/erd.png`), `docs/research/`. The full LLM transcript
-is included with the submission per deliverable #4.
+Built with **Claude Code** (Opus) + the **Playwright MCP**. I reverse-engineered the live
+page first (GraphQL ops, router fingerprint, brand colors → `docs/research/`), had AI judge
+panels critique the plan, then built in commit-sized milestones, verifying each in a real
+browser. Deployment was driven through the Railway CLI and declared as code in
+`.railway/railway.ts`. Full write-up in
+**[PLAN.md → Setup, thought process & AI workflow](PLAN.md#setup-thought-process--ai-workflow)**;
+the complete LLM transcript ships with the submission (deliverable #4).
