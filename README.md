@@ -279,9 +279,16 @@ search/sort (load-more only), עיגול לטובה, video hero, heart counts. S
 the production `Dockerfile`; assets precompile via esbuild + propshaft. Production runs jobs
 on **Sidekiq/Redis** (matching dev) and stores uploads on **Google Cloud Storage**.
 
-Provisioned entirely through the **Railway CLI** (`@railway/cli`): `init` → `add --database
-postgres/redis` → `add --service web|worker` → `variables` (secrets piped via stdin) →
-`up` → `domain`.
+**Initial provisioning** was done through the **Railway CLI** (`@railway/cli`): `init` →
+`add --database postgres/redis` → `add --service web|worker` → `variables` (secrets piped
+via stdin) → `up` → `domain`.
+
+**Continuous deployment (current):** both services are connected to the GitHub repo
+(`natanr123/jgive-home-assigmnet`, branch `main`) with **"Wait for CI" enabled**. So a push
+to `main` → GitHub Actions runs `ci.yml` (scan / lint / RSpec / E2E) → Railway **auto-deploys
+web + worker only when CI is green**. No manual `railway up` in the normal flow; rollbacks are
+one click in Railway. This is platform-native, CI-gated deployment — no bespoke deploy script
+or deploy-from-Actions token to maintain.
 
 **Two services from one image** (`bin/boot` dispatches on `PROCESS_TYPE`, since the CLI
 can't set a per-service start command):
