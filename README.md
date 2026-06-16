@@ -82,6 +82,7 @@ The short version — full reasoning in **[PLAN.md](docs/PLAN.md#key-decisions--
 | **[PLAN.md](docs/PLAN.md)** | Architecture & the modernization story, full decisions, and deployment / infrastructure-as-code |
 | **[MODELS.md](docs/MODELS.md)** | The data model — `CharityOrganization → Campaign → Donation`, fields, enums, and relationships |
 | **[PAYMENT.md](docs/PAYMENT.md)** | How I'd wire a real payment provider and move a donation `pending → paid` (Stripe, idempotency, webhook) |
+| **[I18N.md](docs/I18N.md)** | Translation design — Rails `config/locales` YAML as the single source of truth, exported to JSON (`i18n-js`) for the React layer |
 | **[DEPLOY.md](docs/DEPLOY.md)** | Step-by-step Railway deploy runbook — requirements, first-time provision, routine deploys, gotchas |
 | **[RAILWAY-CONFIGURATION.md](docs/RAILWAY-CONFIGURATION.md)** | Railway infrastructure-as-code reference — `railway.ts` and the `railway config` commands (with the project diagram) |
 | **[railway-diagram.png](docs/railway-diagram.png)** | Railway project canvas — `web` + `worker` services wired to Postgres + Redis |

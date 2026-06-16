@@ -3,6 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "i18n:export": "bundle exec i18n export",
     "build": "esbuild app/javascript/application.tsx --bundle --sourcemap --format=esm --outdir=app/assets/builds --public-path=/assets",
     "typecheck": "tsc --noEmit",
     "e2e": "playwright test"

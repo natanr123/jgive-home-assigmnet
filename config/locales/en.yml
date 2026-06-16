@@ -1,31 +1,100 @@
-# Files in the config/locales directory are used for internationalization and
-# are automatically loaded by Rails. If you want to use locales other than
-# English, add the necessary files in this directory.
-#
-# To use the locales, use `I18n.t`:
-#
-#     I18n.t "hello"
-#
-# In views, this is aliased to just `t`:
-#
-#     <%= t("hello") %>
-#
-# To use a different locale, set it with `I18n.locale`:
-#
-#     I18n.locale = :es
-#
-# This would use the information in config/locales/es.yml.
-#
-# To learn more about the API, please read the Rails Internationalization guide
-# at https://guides.rubyonrails.org/i18n.html.
-#
-# Be aware that YAML interprets the following case-insensitive strings as
-# booleans: `true`, `false`, `on`, `off`, `yes`, `no`. Therefore, these strings
-# must be quoted to be interpreted as strings. For example:
-#
-#     en:
-#       "yes": yup
-#       enabled: "ON"
-
+# English — seeded for the export/parity seam (the app ships Hebrew-only today).
+# Keys must stay at full parity with he.yml so `i18n lint:translations` passes;
+# `en` also acts as a fallback target. The `frontend:` namespace is exported to
+# app/javascript/locales/en.json. See docs/I18N.md.
 en:
-  hello: "Hello world"
+  frontend:
+    raisedSuffix: "raised"
+    goal: "Goal"
+    donorsCount: "Donors"
+    donate: "Donate"
+    bit: "bit"
+    bitDisabled: "Disabled in the demo"
+    copyLink: "Copy link"
+    linkCopied: "Link copied"
+    taxDeductible: "Tax-deductible donation:"
+
+    tabs:
+      about: "About the project"
+      recentDonations: "Recent donations"
+      ambassadors: "Ambassadors"
+      groups: "Groups"
+      organization: "About the charity"
+      updates: "Updates"
+    comingSoon: "Coming soon"
+
+    contactHeading: "Contact the charity:"
+    email: "Email"
+    phone: "Phone"
+    website: "Website"
+    charityNumber: "Charity number"
+    toOrgPage: "Go to the charity page"
+    didYouKnow: "Did you know?"
+    didYouKnowText: "Donations to this project may be tax-deductible in Israel, the US, Canada, and the UK, subject to the site's terms of use."
+
+    anonymous: "Anonymous donor"
+    pendingBadge: "Pending approval"
+    recurringLabel: "Recurring"
+    noDonationsYet: "No donations yet — be the first!"
+    loadMore: "Load more"
+
+    # donate flow
+    donationDetails: "My donation details"
+    personalDetails: "Personal details"
+    oneTime: "One-time donation"
+    recurring: "Recurring"
+    numberOfMonths: "Number of months:"
+    monthsUnit: "months"
+    months:
+      one: "month"
+      other: "months"
+    total: "Total"
+    customAmount: "Other amount"
+    addComment: "Add a comment?"
+    commentPlaceholder: "This comment will be shown on the campaign..."
+    displayPreferenceLabel: "On the project page, I'd like to show:"
+    prefFullName: "My name and donation amount"
+    prefFullNameHint: "Encourage everyone to give like you"
+    prefFirstName: "Just my name"
+    prefFirstNameHint: "Share that you connected with the cause and chose to give"
+    prefAnonymous: "Just the donation amount"
+    prefAnonymousHint: "Stay anonymous"
+    yourDonation: "Your donation amount"
+    continue: "Continue"
+    firstName: "First name"
+    lastName: "Last name"
+    back: "Back"
+    submitDonation: "Finish & donate"
+    thankYouTitle: "Thank you for your donation! 🧡"
+    thankYouBody: "Your donation has been received and is pending approval. The campaign has been updated accordingly."
+    thankYouClose: "Back to the campaign"
+    close: "Close"
+
+    # edit page
+    edit: "Edit"
+    editTitle: "Edit campaign"
+    fieldName: "Campaign name"
+    fieldSubtitle: "Subtitle"
+    fieldGoal: "Goal (₪)"
+    fieldCurrency: "Currency"
+    fieldStory: "Campaign story (HTML)"
+    presetsHeading: "Preset amounts"
+    presetAmountLabel: "Amount (₪)"
+    presetLabelLabel: "Label"
+    addPreset: "Add amount"
+    removePreset: "Remove"
+    imagesHeading: "Images"
+    bannerLabel: "Banner image"
+    avatarLabel: "Charity logo"
+    storyImagesLabel: "Story images (add)"
+    copyEmbedTitle: "Click to copy the embed code"
+    copied: "✓ Copied"
+    storyEmbedHint: 'To embed in the story, paste: <figure><img src="campaigns/story/N.jpg"></figure>'
+    uploading: "Uploading…"
+    orgHeading: "Charity details"
+    fieldOrgName: "Charity name"
+    fieldOrgAbout: "About the charity (HTML)"
+    save: "Save"
+    saving: "Saving…"
+    cancel: "Cancel"
+    editIntro: "Internal edit page (out of spec) — built on the same stack: a GraphQL loader/action."

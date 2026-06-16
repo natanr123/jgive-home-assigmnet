@@ -1,0 +1,104 @@
+# Hebrew — the default locale and single source of truth for UI strings.
+# The `frontend:` namespace is exported to app/javascript/locales/he.json for
+# the React layer (see config/i18n.yml + docs/I18N.md). Keys mirror the legacy
+# app/javascript/locales/he.ts 1:1 (kept camelCase to keep the React migration
+# a pure he.X -> t("X") swap).
+he:
+  frontend:
+    raisedSuffix: "גויסו"
+    goal: "יעד"
+    donorsCount: "מספר תורמים"
+    donate: "לתרומה"
+    bit: "bit"
+    bitDisabled: "לא פעיל בדמו"
+    copyLink: "העתקת קישור"
+    linkCopied: "הקישור הועתק"
+    taxDeductible: "תרומה מוכרת לזיכוי מס:"
+
+    tabs:
+      about: "על הפרויקט"
+      recentDonations: "תרומות אחרונות"
+      ambassadors: "לוח שגרירים"
+      groups: "קבוצות"
+      organization: "על העמותה"
+      updates: "עדכונים"
+    comingSoon: "בקרוב"
+
+    contactHeading: "ליצירת קשר עם העמותה:"
+    email: "אי-מייל"
+    phone: "מספר טלפון"
+    website: "כתובת אתר"
+    charityNumber: "מספר עמותה"
+    toOrgPage: "עברו לדף העמותה"
+    didYouKnow: "הידעת?"
+    didYouKnowText: 'תרומות לפרויקט זה יתכן ויהיו מוכרות לצורכי מס בישראל, בארה"ב, בקנדה ובאנגליה, בהתאם לתנאי השימוש של האתר.'
+
+    anonymous: "תורם/ת אנונימי/ת"
+    pendingBadge: "ממתין לאישור"
+    recurringLabel: "הוראת קבע"
+    noDonationsYet: "עדיין אין תרומות — היו הראשונים!"
+    loadMore: "טען עוד"
+
+    # donate flow
+    donationDetails: "פרטי התרומה שלי"
+    personalDetails: "פרטים אישיים"
+    oneTime: "תרומה חד-פעמית"
+    recurring: "הוראת קבע"
+    numberOfMonths: "מספר חודשים:"
+    monthsUnit: "חודשים"
+    # plural form used by t("months", count:) after the React migration (Phase 3).
+    # NOTE: i18n-js applies its default one/other pluralizer (correct for a month
+    # count), not registered Hebrew CLDR — see docs/I18N.md.
+    months:
+      one: "חודש"
+      other: "חודשים"
+    total: 'סה"כ'
+    customAmount: "סכום אחר"
+    addComment: "רוצה להוסיף הערה?"
+    commentPlaceholder: "הערה זאת תוצג בקמפיין..."
+    displayPreferenceLabel: "אני רוצה שבעמוד הפרויקט יופיע:"
+    prefFullName: "השם שלי וסכום התרומה"
+    prefFullNameHint: "עודדו את כולם לתרום כמוכם"
+    prefFirstName: "רק השם שלי"
+    prefFirstNameHint: "שתפו שהתחברתם ליעד והחלטתם לתרום"
+    prefAnonymous: "רק סכום התרומה"
+    prefAnonymousHint: "הישארו אנונימיים"
+    yourDonation: "סכום התרומה שלך"
+    continue: "המשך"
+    firstName: "שם פרטי"
+    lastName: "שם משפחה"
+    back: "חזרה"
+    submitDonation: "סיום ותרומה"
+    thankYouTitle: "תודה רבה על תרומתך! 🧡"
+    thankYouBody: "התרומה נקלטה וממתינה לאישור. עדכנו את הקמפיין בהתאם."
+    thankYouClose: "חזרה לקמפיין"
+    close: "סגירה"
+
+    # edit page
+    edit: "עריכה"
+    editTitle: "עריכת קמפיין"
+    fieldName: "שם הקמפיין"
+    fieldSubtitle: "כותרת משנה"
+    fieldGoal: "יעד (₪)"
+    fieldCurrency: "מטבע"
+    fieldStory: "סיפור הקמפיין (HTML)"
+    presetsHeading: "סכומים מוגדרים מראש"
+    presetAmountLabel: "סכום (₪)"
+    presetLabelLabel: "תיאור"
+    addPreset: "הוסף סכום"
+    removePreset: "הסר"
+    imagesHeading: "תמונות"
+    bannerLabel: "תמונת באנר"
+    avatarLabel: "לוגו עמותה"
+    storyImagesLabel: "תמונות בסיפור (הוספה)"
+    copyEmbedTitle: "לחצו להעתקת קוד ההטמעה"
+    copied: "✓ הועתק"
+    storyEmbedHint: 'להטמעה בסיפור, הדביקו: <figure><img src="campaigns/story/N.jpg"></figure>'
+    uploading: "מעלה…"
+    orgHeading: "פרטי העמותה"
+    fieldOrgName: "שם העמותה"
+    fieldOrgAbout: "אודות העמותה (HTML)"
+    save: "שמירה"
+    saving: "שומר…"
+    cancel: "ביטול"
+    editIntro: "עמוד עריכה פנימי (מחוץ למפרט) — נבנה על אותו stack: GraphQL loader/action."

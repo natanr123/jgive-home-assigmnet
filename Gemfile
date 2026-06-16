@@ -13,6 +13,9 @@ gem "jsbundling-rails"
 # GraphQL API [https://graphql-ruby.org] — mirrors JGive's real /graphql endpoint
 gem "graphql"
 
+# Export config/locales YAML to JSON for the React layer [https://github.com/fnando/i18n-js]
+gem "i18n-js", "~> 4.2"
+
 # Background jobs on Redis [https://sidekiq.org]
 gem "sidekiq"
 

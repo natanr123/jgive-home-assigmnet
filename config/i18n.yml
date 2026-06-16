@@ -1,0 +1,15 @@
+# i18n-js export config — see docs/I18N.md.
+#
+# config/locales/*.yml is the single source of truth. This exports ONLY the
+# `frontend:` namespace to JSON for the React layer, so server-only strings
+# (activerecord.errors.*, mailers, …) never reach the browser bundle.
+#
+# Patterns match the FULL dotted path including the locale segment
+# (e.g. "he.frontend.donate"), which is why the leading "*." is required.
+#
+# `:locale` is the v4 per-file placeholder (v3 used `%{locale}`); it expands to
+# one file per locale: he.json + en.json. Regenerate with: bundle exec i18n export
+translations:
+  - file: "app/javascript/locales/:locale.json"
+    patterns:
+      - "*.frontend.*"

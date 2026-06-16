@@ -23,6 +23,15 @@ module JgiveHomeAssigment
     # Background jobs run on Sidekiq (Redis-backed).
     config.active_job.queue_adapter = :sidekiq
 
+    # i18n — config/locales/*.yml is the single source of truth. Hebrew is the
+    # default; English is seeded for the export/parity seam (see docs/I18N.md).
+    # i18n-js exports the `frontend:` namespace to app/javascript/locales/*.json.
+    # Fall back to :en so framework messages (ActiveRecord errors, etc.), which
+    # ship only in English, still resolve when the locale is :he.
+    config.i18n.default_locale = :he
+    config.i18n.available_locales = %i[he en]
+    config.i18n.fallbacks = [ :en ]
+
     # Please, add to the `ignore` list any other `lib` subdirectories that do
     # not contain `.rb` files, or that should not be reloaded or eager loaded.
     # Common ones are `templates`, `generators`, or `middleware`, for example.
