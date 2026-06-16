@@ -6,6 +6,7 @@
       "anonymous": "Anonymous donor",
       "avatarLabel": "Charity logo",
       "back": "Back",
+      "backHome": "Back to home",
       "bannerLabel": "Banner image",
       "bit": "bit",
       "bitDisabled": "Disabled in the demo",
@@ -25,6 +26,7 @@
       "displayPreferenceLabel": "On the project page, I'd like to show:",
       "donate": "Donate",
       "donationDetails": "My donation details",
+      "donations": "donations",
       "donorsCount": "Donors",
       "edit": "Edit",
       "editIntro": "Internal edit page (out of spec) — built on the same stack: a GraphQL loader/action.",
@@ -38,6 +40,57 @@
       "fieldStory": "Campaign story (HTML)",
       "fieldSubtitle": "Subtitle",
       "firstName": "First name",
+      "footer": {
+        "columns": {
+          "about": {
+            "items": [
+              "Our story",
+              "Social board",
+              "Investment committee",
+              "Research & data",
+              "Information security"
+            ],
+            "title": "About"
+          },
+          "join": {
+            "items": [
+              "Donors",
+              "Charities",
+              "Companies",
+              "Careers"
+            ],
+            "title": "Join us"
+          },
+          "products": {
+            "items": [
+              "Jgive Platinum",
+              "Jgive PRO",
+              "Jgive Business",
+              "GiveCard",
+              "Stock donations"
+            ],
+            "title": "Products"
+          },
+          "useful": {
+            "items": [
+              "Support",
+              "Contact",
+              "Fees",
+              "Donate"
+            ],
+            "title": "Useful"
+          }
+        },
+        "copy": "Copyright, Asor Foundation (R.A.) 2026",
+        "legal": [
+          "Cookie settings",
+          "Terms of use",
+          "Charity terms",
+          "Privacy policy",
+          "Accessibility statement"
+        ]
+      },
+      "genericError": "Something went wrong",
       "goal": "Goal",
       "imagesHeading": "Images",
       "lastName": "Last name",
@@ -49,6 +102,7 @@
       },
       "monthsUnit": "months",
       "noDonationsYet": "No donations yet — be the first!",
+      "notFound": "Campaign not found",
       "numberOfMonths": "Number of months:",
       "oneTime": "One-time donation",
       "orgHeading": "Charity details",
@@ -70,9 +124,15 @@
       "removePreset": "Remove",
       "save": "Save",
       "saving": "Saving…",
+      "search": "Search",
       "storyEmbedHint": "To embed in the story, paste: <figure><img src=\"campaigns/story/N.jpg\"></figure>",
       "storyImagesLabel": "Story images (add)",
       "submitDonation": "Finish & donate",
+      "support": "Support",
+      "switcher": {
+        "done": "Done",
+        "taxHeading": "Choose a country for tax-deduction purposes"
+      },
       "tabs": {
         "about": "About the project",
         "ambassadors": "Ambassadors",
@@ -87,6 +147,7 @@
       "thankYouTitle": "Thank you for your donation! 🧡",
       "toOrgPage": "Go to the charity page",
       "total": "Total",
+      "uploadFailed": "Upload failed, please try again",
       "uploading": "Uploading…",
       "website": "Website",
       "yourDonation": "Your donation amount"

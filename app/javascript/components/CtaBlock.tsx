@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { Link } from "react-router";
-import { he } from "../locales/he";
+import { useT } from "../lib/i18n";
 import styles from "./CtaBlock.module.css";
 
 export default function CtaBlock({ campaign }: { campaign: { name: string; subtitle?: string | null } }) {
+  const t = useT();
   const [copied, setCopied] = useState(false);
 
   const copyLink = async () => {
@@ -20,21 +21,21 @@ export default function CtaBlock({ campaign }: { campaign: { name: string; subti
 
   return (
     <section className={styles.card}>
-      <button type="button" className={styles.bit} disabled title={he.bitDisabled}>
-        {he.bit}
+      <button type="button" className={styles.bit} disabled title={t("bitDisabled")}>
+        {t("bit")}
       </button>
 
       <Link to="donate/amount" className={styles.donate}>
-        {he.donate}
+        {t("donate")}
       </Link>
 
       <div className={styles.tax}>
-        <span>{he.taxDeductible}</span>
+        <span>{t("taxDeductible")}</span>
         <span className={styles.flags} aria-hidden="true">🇺🇸 🇮🇱 🇬🇧 🇨🇦</span>
       </div>
 
       <div className={styles.share}>
-        <button type="button" onClick={copyLink} className={styles.shareBtn} title={he.copyLink}>
+        <button type="button" onClick={copyLink} className={styles.shareBtn} title={t("copyLink")}>
           🔗
         </button>
         <a
@@ -64,7 +65,7 @@ export default function CtaBlock({ campaign }: { campaign: { name: string; subti
         >
           𝕏
         </a>
-        {copied && <span className={styles.copied}>{he.linkCopied}</span>}
+        {copied && <span className={styles.copied}>{t("linkCopied")}</span>}
       </div>
     </section>
   );

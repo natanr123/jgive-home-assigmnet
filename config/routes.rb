@@ -9,9 +9,10 @@ Rails.application.routes.draw do
   # Health check for load balancers / uptime monitors.
   get "up" => "rails/health#show", as: :rails_health_check
 
-  # "/" redirects to the featured (first) campaign — keeps the GraphQL schema at
-  # 2 queries + 1 mutation (no separate "list campaigns" query just for this).
-  root to: redirect { |_params, _req| "/campaigns/#{Campaign.order(:id).first&.id}" }
+  # "/" redirects to the featured (first) campaign under the default locale+currency
+  # (/he/ils/, mirroring the live site). Keeps the GraphQL schema tiny (no "list
+  # campaigns" query just for this).
+  root to: redirect { |_params, _req| "/he/ils/campaigns/#{Campaign.order(:id).first&.id}" }
 
   # SPA shell for every client-routed path. Specific routes above win; the
   # constraint is belt-and-braces (segment boundaries, not prefixes) so it never

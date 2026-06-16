@@ -88,9 +88,147 @@
   cursor: default;
 }
 
-/* On small screens, drop the secondary menu — keep logo + donate. */
+/* ---- Language / currency switcher ---- */
+.switcherWrap {
+  position: relative;
+}
+
+.switcher {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: none;
+  border: none;
+  font: inherit;
+  font-size: 0.95rem;
+  color: var(--ink);
+  cursor: pointer;
+  padding: 0;
+}
+
+.globe {
+  font-size: 1.05rem;
+}
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+}
+
+.popover {
+  position: absolute;
+  inset-block-start: calc(100% + 0.6rem);
+  inset-inline-end: 0;
+  z-index: 70;
+  width: 248px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.16);
+  padding: 1.1rem 1.25rem 1.25rem;
+  text-align: start;
+}
+
+.langList {
+  list-style: none;
+  margin: 0 0 0.75rem;
+  padding: 0;
+}
+
+.langRow {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: none;
+  border: none;
+  font: inherit;
+  font-size: 1.05rem;
+  color: var(--ink);
+  cursor: pointer;
+  padding: 0.45rem 0;
+  border-block-end: 1px solid var(--line);
+}
+
+.langRow:last-child {
+  border-block-end: none;
+}
+
+.check {
+  width: 1.1rem;
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.taxHeading {
+  margin: 0.5rem 0 0.85rem;
+  font-size: 0.85rem;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+.ccyRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.4rem;
+  margin-bottom: 1.1rem;
+}
+
+.ccy {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  background: none;
+  border: none;
+  font: inherit;
+  cursor: pointer;
+  padding: 0;
+}
+
+.ccyCircle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  color: var(--ink);
+  background: #fff;
+}
+
+.ccyActive {
+  background: var(--ink, #222);
+  color: #fff;
+  border-color: var(--ink, #222);
+}
+
+.ccyLabel {
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+
+.done {
+  display: block;
+  width: 100%;
+  background: none;
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  font: inherit;
+  font-size: 0.95rem;
+  color: var(--ink);
+  cursor: pointer;
+  padding: 0.6rem 1rem;
+}
+
+.done:hover {
+  background: var(--line);
+}
+
+/* On small screens, drop the secondary text item — keep logo + switcher + donate. */
 @media (max-width: 720px) {
-  .menu,
   .textItem,
   .iconBtn {
     display: none;

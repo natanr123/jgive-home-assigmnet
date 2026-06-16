@@ -14,6 +14,13 @@ en:
     linkCopied: "Link copied"
     taxDeductible: "Tax-deductible donation:"
 
+    # header chrome
+    support: "Support"
+    search: "Search"
+    switcher:
+      taxHeading: "Choose a country for tax-deduction purposes"
+      done: "Done"
+
     tabs:
       about: "About the project"
       recentDonations: "Recent donations"
@@ -98,3 +105,28 @@ en:
     saving: "Saving…"
     cancel: "Cancel"
     editIntro: "Internal edit page (out of spec) — built on the same stack: a GraphQL loader/action."
+    uploadFailed: "Upload failed, please try again"
+
+    # recent-donations + error page
+    donations: "donations"
+    notFound: "Campaign not found"
+    genericError: "Something went wrong"
+    backHome: "Back to home"
+
+    # site footer (presentational link lists)
+    footer:
+      copy: "Copyright, Asor Foundation (R.A.) 2026"
+      columns:
+        about:
+          title: "About"
+          items: ["Our story", "Social board", "Investment committee", "Research & data", "Information security"]
+        join:
+          title: "Join us"
+          items: ["Donors", "Charities", "Companies", "Careers"]
+        products:
+          title: "Products"
+          items: ["Jgive Platinum", "Jgive PRO", "Jgive Business", "GiveCard", "Stock donations"]
+        useful:
+          title: "Useful"
+          items: ["Support", "Contact", "Fees", "Donate"]
+      legal: ["Cookie settings", "Terms of use", "Charity terms", "Privacy policy", "Accessibility statement"]

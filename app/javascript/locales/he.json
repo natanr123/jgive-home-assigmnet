@@ -6,6 +6,7 @@
       "anonymous": "תורם/ת אנונימי/ת",
       "avatarLabel": "לוגו עמותה",
       "back": "חזרה",
+      "backHome": "חזרה לעמוד הבית",
       "bannerLabel": "תמונת באנר",
       "bit": "bit",
       "bitDisabled": "לא פעיל בדמו",
@@ -25,6 +26,7 @@
       "displayPreferenceLabel": "אני רוצה שבעמוד הפרויקט יופיע:",
       "donate": "לתרומה",
       "donationDetails": "פרטי התרומה שלי",
+      "donations": "תרומות",
       "donorsCount": "מספר תורמים",
       "edit": "עריכה",
       "editIntro": "עמוד עריכה פנימי (מחוץ למפרט) — נבנה על אותו stack: GraphQL loader/action.",
@@ -38,6 +40,57 @@
       "fieldStory": "סיפור הקמפיין (HTML)",
       "fieldSubtitle": "כותרת משנה",
       "firstName": "שם פרטי",
+      "footer": {
+        "columns": {
+          "about": {
+            "items": [
+              "הסיפור שלנו",
+              "הדירקטוריון החברתי",
+              "ועדת ההשקעות",
+              "מחקר ודאטה",
+              "אבטחת מידע"
+            ],
+            "title": "אודות"
+          },
+          "join": {
+            "items": [
+              "תורמים",
+              "עמותות",
+              "חברות",
+              "קריירה"
+            ],
+            "title": "הצטרפו אלינו"
+          },
+          "products": {
+            "items": [
+              "Jgive Platinum",
+              "Jgive PRO",
+              "Jgive Business",
+              "GiveCard",
+              "תרומת מניות"
+            ],
+            "title": "מוצרים"
+          },
+          "useful": {
+            "items": [
+              "תמיכה",
+              "צור קשר",
+              "עמלות",
+              "לתרומה"
+            ],
+            "title": "שימושי"
+          }
+        },
+        "copy": "זכויות יוצרים, קרן עשור (ע\"ר) 2026",
+        "legal": [
+          "הגדרות קוקיז",
+          "תנאי שימוש",
+          "תנאי שימוש לעמותות",
+          "מדיניות פרטיות",
+          "הצהרת נגישות"
+        ]
+      },
+      "genericError": "משהו השתבש",
       "goal": "יעד",
       "imagesHeading": "תמונות",
       "lastName": "שם משפחה",
@@ -49,6 +102,7 @@
       },
       "monthsUnit": "חודשים",
       "noDonationsYet": "עדיין אין תרומות — היו הראשונים!",
+      "notFound": "הקמפיין לא נמצא",
       "numberOfMonths": "מספר חודשים:",
       "oneTime": "תרומה חד-פעמית",
       "orgHeading": "פרטי העמותה",
@@ -70,9 +124,15 @@
       "removePreset": "הסר",
       "save": "שמירה",
       "saving": "שומר…",
+      "search": "חיפוש",
       "storyEmbedHint": "להטמעה בסיפור, הדביקו: <figure><img src=\"campaigns/story/N.jpg\"></figure>",
       "storyImagesLabel": "תמונות בסיפור (הוספה)",
       "submitDonation": "סיום ותרומה",
+      "support": "תמיכה",
+      "switcher": {
+        "done": "סיום",
+        "taxHeading": "בחרו מדינה למטרות החזר מס"
+      },
       "tabs": {
         "about": "על הפרויקט",
         "ambassadors": "לוח שגרירים",
@@ -87,6 +147,7 @@
       "thankYouTitle": "תודה רבה על תרומתך! 🧡",
       "toOrgPage": "עברו לדף העמותה",
       "total": "סה\"כ",
+      "uploadFailed": "ההעלאה נכשלה, נסו שוב",
       "uploading": "מעלה…",
       "website": "כתובת אתר",
       "yourDonation": "סכום התרומה שלך"

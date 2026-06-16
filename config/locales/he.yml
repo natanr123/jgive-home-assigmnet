@@ -15,6 +15,13 @@ he:
     linkCopied: "הקישור הועתק"
     taxDeductible: "תרומה מוכרת לזיכוי מס:"
 
+    # header chrome
+    support: "תמיכה"
+    search: "חיפוש"
+    switcher:
+      taxHeading: "בחרו מדינה למטרות החזר מס"
+      done: "סיום"
+
     tabs:
       about: "על הפרויקט"
       recentDonations: "תרומות אחרונות"
@@ -102,3 +109,28 @@ he:
     saving: "שומר…"
     cancel: "ביטול"
     editIntro: "עמוד עריכה פנימי (מחוץ למפרט) — נבנה על אותו stack: GraphQL loader/action."
+    uploadFailed: "ההעלאה נכשלה, נסו שוב"
+
+    # recent-donations + error page
+    donations: "תרומות"
+    notFound: "הקמפיין לא נמצא"
+    genericError: "משהו השתבש"
+    backHome: "חזרה לעמוד הבית"
+
+    # site footer (presentational link lists)
+    footer:
+      copy: 'זכויות יוצרים, קרן עשור (ע"ר) 2026'
+      columns:
+        about:
+          title: "אודות"
+          items: ["הסיפור שלנו", "הדירקטוריון החברתי", "ועדת ההשקעות", "מחקר ודאטה", "אבטחת מידע"]
+        join:
+          title: "הצטרפו אלינו"
+          items: ["תורמים", "עמותות", "חברות", "קריירה"]
+        products:
+          title: "מוצרים"
+          items: ["Jgive Platinum", "Jgive PRO", "Jgive Business", "GiveCard", "תרומת מניות"]
+        useful:
+          title: "שימושי"
+          items: ["תמיכה", "צור קשר", "עמלות", "לתרומה"]
+      legal: ["הגדרות קוקיז", "תנאי שימוש", "תנאי שימוש לעמותות", "מדיניות פרטיות", "הצהרת נגישות"]

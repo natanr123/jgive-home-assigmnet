@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from "react";
-import { he } from "../locales/he";
+import { useT } from "../lib/i18n";
 import styles from "./Tabs.module.css";
 
 export interface TabDef {
@@ -10,6 +10,7 @@ export interface TabDef {
 }
 
 export default function Tabs({ tabs }: { tabs: TabDef[] }) {
+  const t = useT();
   const firstEnabled = tabs.find((t) => !t.disabled)?.key ?? tabs[0].key;
   const [active, setActive] = useState(firstEnabled);
   const activeTab = tabs.find((t) => t.key === active);
@@ -17,22 +18,22 @@ export default function Tabs({ tabs }: { tabs: TabDef[] }) {
   return (
     <div>
       <div className={styles.bar} role="tablist">
-        {tabs.map((t) => (
+        {tabs.map((tab) => (
           <button
-            key={t.key}
+            key={tab.key}
             type="button"
             role="tab"
-            aria-selected={t.key === active}
-            disabled={t.disabled}
-            title={t.disabled ? he.comingSoon : undefined}
+            aria-selected={tab.key === active}
+            disabled={tab.disabled}
+            title={tab.disabled ? t("comingSoon") : undefined}
             className={[
               styles.tab,
-              t.key === active ? styles.active : "",
-              t.disabled ? styles.disabled : "",
+              tab.key === active ? styles.active : "",
+              tab.disabled ? styles.disabled : "",
             ].join(" ")}
-            onClick={() => !t.disabled && setActive(t.key)}
+            onClick={() => !tab.disabled && setActive(tab.key)}
           >
-            {t.label}
+            {tab.label}
           </button>
         ))}
       </div>

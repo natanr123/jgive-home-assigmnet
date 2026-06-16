@@ -1,23 +1,23 @@
 import styles from "./SiteFooter.module.css";
+import { i18n, useT, useLocale } from "../lib/i18n";
 
 // Site footer reproducing JGive's. Links are presentational (the focus is the
 // campaign page); kept as inert items so the chrome reads complete.
-const COLUMNS: { title: string; items: string[] }[] = [
-  { title: "אודות", items: ["הסיפור שלנו", "הדירקטוריון החברתי", "ועדת ההשקעות", "מחקר ודאטה", "אבטחת מידע"] },
-  { title: "הצטרפו אלינו", items: ["תורמים", "עמותות", "חברות", "קריירה"] },
-  { title: "מוצרים", items: ["Jgive Platinum", "Jgive PRO", "Jgive Business", "GiveCard", "תרומת מניות"] },
-  { title: "שימושי", items: ["תמיכה", "צור קשר", "עמלות", "לתרומה"] },
-];
-
-const LEGAL = ["הגדרות קוקיז", "תנאי שימוש", "תנאי שימוש לעמותות", "מדיניות פרטיות", "הצהרת נגישות"];
-
 export default function SiteFooter() {
+  const t = useT();
+  const { locale } = useLocale();
+  const list = (k: string) => i18n.t(`frontend.${k}`, { locale }) as unknown as string[];
+  const COLUMNS = ["about", "join", "products", "useful"].map((k) => ({
+    title: t(`footer.columns.${k}.title`),
+    items: list(`footer.columns.${k}.items`),
+  }));
+  const LEGAL = list("footer.legal");
   return (
     <footer className={styles.footer}>
       <div className={styles.inner}>
         <div className={styles.brand}>
           <span className={styles.logo}>Jgive</span>
-          <p className={styles.copy}>זכויות יוצרים, קרן עשור (ע"ר) 2026</p>
+          <p className={styles.copy}>{t("footer.copy")}</p>
         </div>
 
         <div className={styles.columns}>

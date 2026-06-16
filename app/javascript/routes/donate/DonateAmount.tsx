@@ -1,14 +1,13 @@
 import { useState } from "react";
 import { useNavigate, useOutletContext, useParams } from "react-router";
 import type { Campaign } from "../../lib/types";
-import { formatILS } from "../../lib/format";
-import { he } from "../../locales/he";
+import { useT, useFormat } from "../../lib/i18n";
 import styles from "./donate.module.css";
 
 const PREFS = [
-  { value: "full_name", label: he.prefFullName, hint: he.prefFullNameHint },
-  { value: "first_name_only", label: he.prefFirstName, hint: he.prefFirstNameHint },
-  { value: "anonymous", label: he.prefAnonymous, hint: he.prefAnonymousHint },
+  { value: "full_name", labelKey: "prefFullName", hintKey: "prefFullNameHint" },
+  { value: "first_name_only", labelKey: "prefFirstName", hintKey: "prefFirstNameHint" },
+  { value: "anonymous", labelKey: "prefAnonymous", hintKey: "prefAnonymousHint" },
 ] as const;
 
 // JGive's maxRecurringMonths. Standing orders default to the full term, like the source.
@@ -16,9 +15,11 @@ const MAX_RECURRING_MONTHS = 36;
 const MONTH_OPTIONS = Array.from({ length: MAX_RECURRING_MONTHS }, (_, i) => i + 1);
 
 export default function DonateAmount() {
+  const t = useT();
+  const f = useFormat();
   const campaign = useOutletContext<Campaign>();
   const navigate = useNavigate();
-  const { id } = useParams();
+  const { locale, currency, id } = useParams();
 
   const [presetCents, setPresetCents] = useState<number | null>(null);
   const [custom, setCustom] = useState("");
@@ -37,7 +38,7 @@ export default function DonateAmount() {
 
   // Render a preset's headline: "36 × ₪360" for recurring, "₪360" otherwise.
   const presetHeadline = (cents: number) =>
-    isRecurring ? `${months} × ${formatILS(cents)}` : formatILS(cents);
+    isRecurring ? `${months} × ${f.money(cents)}` : f.money(cents);
 
   const onContinue = () => {
     const params = new URLSearchParams({
@@ -47,17 +48,17 @@ export default function DonateAmount() {
     });
     if (isRecurring) params.set("recurringMonths", String(months));
     if (showComment && comment.trim()) params.set("comment", comment.trim());
-    navigate(`/campaigns/${id}/donate/details?${params.toString()}`);
+    navigate(`/${locale}/${currency}/campaigns/${id}/donate/details?${params.toString()}`);
   };
 
   return (
     <div>
-      <h2 className={styles.stepTitle}>{he.donationDetails}</h2>
+      <h2 className={styles.stepTitle}>{t("donationDetails")}</h2>
 
-      <div className={styles.freq} role="radiogroup" aria-label={he.donationDetails}>
+      <div className={styles.freq} role="radiogroup" aria-label={t("donationDetails")}>
         {[
-          { v: "one_time", l: he.oneTime },
-          { v: "monthly", l: he.recurring },
+          { v: "one_time", l: t("oneTime") },
+          { v: "monthly", l: t("recurring") },
         ].map((o) => (
           <label key={o.v} className={frequency === o.v ? styles.freqOnActive : styles.freqOn}>
             <input
@@ -88,13 +89,13 @@ export default function DonateAmount() {
           </button>
         ))}
         <label className={presetCents === null && custom ? styles.presetActive : styles.preset}>
-          <span className={styles.presetLabel}>{he.customAmount}</span>
+          <span className={styles.presetLabel}>{t("customAmount")}</span>
           <input
             className={styles.customInput}
             type="number"
             min="1"
             inputMode="numeric"
-            aria-label={he.customAmount}
+            aria-label={t("customAmount")}
             value={custom}
             onChange={(e) => {
               setCustom(e.target.value);
@@ -107,7 +108,7 @@ export default function DonateAmount() {
       {isRecurring && (
         <div className={styles.months}>
           <label htmlFor="months" className={styles.fieldLabel}>
-            {he.numberOfMonths}
+            {t("numberOfMonths")}
           </label>
           <div className={styles.monthsRow}>
             <select
@@ -118,12 +119,12 @@ export default function DonateAmount() {
             >
               {MONTH_OPTIONS.map((m) => (
                 <option key={m} value={m}>
-                  {m} {he.monthsUnit}
+                  {m} {t("months", { count: m })}
                 </option>
               ))}
             </select>
             <span className={styles.monthsTotal}>
-              {he.total}: <strong>{formatILS(totalCents)}</strong>
+              {t("total")}: <strong>{f.money(totalCents)}</strong>
             </span>
           </div>
         </div>
@@ -135,12 +136,12 @@ export default function DonateAmount() {
           checked={showComment}
           onChange={(e) => setShowComment(e.target.checked)}
         />
-        {he.addComment}
+        {t("addComment")}
       </label>
       {showComment && (
         <textarea
           className={styles.textarea}
-          placeholder={he.commentPlaceholder}
+          placeholder={t("commentPlaceholder")}
           maxLength={280}
           value={comment}
           onChange={(e) => setComment(e.target.value)}
@@ -149,7 +150,7 @@ export default function DonateAmount() {
 
       <div className={styles.field}>
         <label htmlFor="pref" className={styles.fieldLabel}>
-          {he.displayPreferenceLabel}
+          {t("displayPreferenceLabel")}
         </label>
         <select
           id="pref"
@@ -159,7 +160,7 @@ export default function DonateAmount() {
         >
           {PREFS.map((p) => (
             <option key={p.value} value={p.value}>
-              {p.label} — {p.hint}
+              {t(p.labelKey)} — {t(p.hintKey)}
             </option>
           ))}
         </select>
@@ -167,16 +168,16 @@ export default function DonateAmount() {
 
       <footer className={styles.footer}>
         <span>
-          {he.yourDonation}: <strong>{formatILS(totalCents)}</strong>
+          {t("yourDonation")}: <strong>{f.money(totalCents)}</strong>
           {isRecurring && amountCents > 0 && (
             <span className={styles.footerNote}>
               {" "}
-              ({months} × {formatILS(amountCents)})
+              ({months} × {f.money(amountCents)})
             </span>
           )}
         </span>
         <button type="button" className={styles.primary} disabled={!canContinue} onClick={onContinue}>
-          {he.continue}
+          {t("continue")}
         </button>
       </footer>
     </div>

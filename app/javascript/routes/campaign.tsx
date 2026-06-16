@@ -2,7 +2,7 @@ import { useLoaderData, Outlet, Link, type LoaderFunctionArgs } from "react-rout
 import { gql } from "../lib/gql";
 import { CAMPAIGN_QUERY } from "../lib/queries";
 import type { Campaign } from "../lib/types";
-import { he } from "../locales/he";
+import { useT } from "../lib/i18n";
 import SiteHeader from "../components/SiteHeader";
 import SiteFooter from "../components/SiteFooter";
 import Hero from "../components/Hero";
@@ -26,15 +26,16 @@ export async function campaignLoader({ params }: LoaderFunctionArgs): Promise<Ca
 }
 
 export default function CampaignPage() {
+  const t = useT();
   const campaign = useLoaderData() as Campaign;
 
   const tabs: TabDef[] = [
-    { key: "about", label: he.tabs.about, render: () => <AboutTab campaign={campaign} /> },
-    { key: "recent", label: he.tabs.recentDonations, render: () => <RecentDonationsTab campaign={campaign} /> },
-    { key: "ambassadors", label: he.tabs.ambassadors, disabled: true },
-    { key: "groups", label: he.tabs.groups, disabled: true },
-    { key: "organization", label: he.tabs.organization, render: () => <OrganizationTab campaign={campaign} /> },
-    { key: "updates", label: he.tabs.updates, disabled: true },
+    { key: "about", label: t("tabs.about"), render: () => <AboutTab campaign={campaign} /> },
+    { key: "recent", label: t("tabs.recentDonations"), render: () => <RecentDonationsTab campaign={campaign} /> },
+    { key: "ambassadors", label: t("tabs.ambassadors"), disabled: true },
+    { key: "groups", label: t("tabs.groups"), disabled: true },
+    { key: "organization", label: t("tabs.organization"), render: () => <OrganizationTab campaign={campaign} /> },
+    { key: "updates", label: t("tabs.updates"), disabled: true },
   ];
 
   return (
@@ -53,7 +54,7 @@ export default function CampaignPage() {
             <div className={styles.titleCol}>
               <h1 className={styles.headline}>{campaign.name}</h1>
               {campaign.subtitle && <p className={styles.subtitle}>{campaign.subtitle}</p>}
-              <Link to="edit" className={styles.editLink}>✎ {he.edit}</Link>
+              <Link to="edit" className={styles.editLink}>✎ {t("edit")}</Link>
             </div>
             <div className={styles.ctaCol}>
               <CtaBlock campaign={campaign} />

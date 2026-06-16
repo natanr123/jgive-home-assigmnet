@@ -1,16 +1,17 @@
 import type { Stats } from "../lib/types";
-import { formatILS } from "../lib/format";
-import { he } from "../locales/he";
+import { useT, useFormat } from "../lib/i18n";
 import styles from "./ProgressBar.module.css";
 
 export default function ProgressBar({ stats }: { stats: Stats }) {
+  const t = useT();
+  const f = useFormat();
   const pct = Math.min(stats.percent, 100);
   return (
     <section className={styles.wrap} aria-label="התקדמות הקמפיין">
       <div className={styles.topRow}>
-        <span className={styles.raised}>{formatILS(stats.raisedCents)}</span>
+        <span className={styles.raised}>{f.money(stats.raisedCents)}</span>
         <span className={styles.percent}>
-          <strong>{stats.percent}%</strong> {he.raisedSuffix}
+          <strong>{stats.percent}%</strong> {t("raisedSuffix")}
         </span>
       </div>
 
@@ -28,10 +29,10 @@ export default function ProgressBar({ stats }: { stats: Stats }) {
 
       <div className={styles.bottomRow}>
         <span>
-          {he.donorsCount}: <strong>{stats.donorsCount.toLocaleString("he-IL")}</strong>
+          {t("donorsCount")}: <strong>{f.num(stats.donorsCount)}</strong>
         </span>
         <span>
-          {he.goal}: <strong>{formatILS(stats.goalAmountCents)}</strong>
+          {t("goal")}: <strong>{f.money(stats.goalAmountCents)}</strong>
         </span>
       </div>
     </section>

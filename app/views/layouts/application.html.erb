@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html dir="rtl" lang="he">
+<html dir="<%= I18n.locale == :he ? "rtl" : "ltr" %>" lang="<%= I18n.locale %>">
   <head>
     <title><%= content_for(:title) || "הגן הכתום — גיוס תרומות אונליין | Jgive" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">

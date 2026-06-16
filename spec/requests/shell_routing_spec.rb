@@ -9,6 +9,13 @@ RSpec.describe "SPA shell routing", type: :request do
     expect(response.body).to include('<div id="root">')
   end
 
+  it "serves the shell for a locale/currency-prefixed path and sets <html lang>/dir" do
+    get "/en/usd/campaigns/123"
+    expect(response).to have_http_status(:ok)
+    expect(response.body).to include('<div id="root">')
+    expect(response.body).to include('lang="en"').and include('dir="ltr"')
+  end
+
   it "serves the shell for a nested donate path" do
     get "/campaigns/123/donate/amount"
     expect(response).to have_http_status(:ok)
@@ -25,7 +32,7 @@ RSpec.describe "SPA shell routing", type: :request do
     org = create(:charity_organization)
     campaign = create(:campaign, charity_organization: org)
     get "/"
-    expect(response).to redirect_to("/campaigns/#{campaign.id}")
+    expect(response).to redirect_to("/he/ils/campaigns/#{campaign.id}")
   end
 
   it "routes /graphql to the GraphQL controller, not the shell" do

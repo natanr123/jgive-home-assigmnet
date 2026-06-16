@@ -5,6 +5,7 @@ import {
   useActionData,
   useLoaderData,
   useNavigation,
+  useParams,
   useSubmit,
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
@@ -13,7 +14,7 @@ import { gql } from "../lib/gql";
 import { directUpload } from "../lib/directUpload";
 import { CAMPAIGN_EDIT_QUERY, UPDATE_CAMPAIGN_MUTATION } from "../lib/queries";
 import type { Campaign } from "../lib/types";
-import { he } from "../locales/he";
+import { useT } from "../lib/i18n";
 import styles from "./CampaignEdit.module.css";
 
 export async function editLoader({ params }: LoaderFunctionArgs): Promise<Campaign> {
@@ -35,7 +36,7 @@ export async function editAction({ request, params }: ActionFunctionArgs) {
     { input: { id: params.id, ...payload } }
   );
   if (data.updateCampaign.errors.length) return { errors: data.updateCampaign.errors };
-  return redirect(`/campaigns/${params.id}`);
+  return redirect(`/${params.locale}/${params.currency}/campaigns/${params.id}`);
 }
 
 interface PresetRow {
@@ -51,6 +52,8 @@ function nextStoryIndex(html: string): number {
 }
 
 export default function CampaignEdit() {
+  const t = useT();
+  const { locale, currency: routeCurrency } = useParams();
   const campaign = useLoaderData() as Campaign;
   const submit = useSubmit();
   const navigation = useNavigation();
@@ -102,7 +105,7 @@ export default function CampaignEdit() {
     try {
       setSignedId(await directUpload(file));
     } catch {
-      setUploadError("ההעלאה נכשלה, נסו שוב");
+      setUploadError(t("uploadFailed"));
     }
   }
 
@@ -126,7 +129,7 @@ export default function CampaignEdit() {
         ids.push(sid);
         thumbs.push(URL.createObjectURL(file));
       } catch {
-        setUploadError("ההעלאה נכשלה, נסו שוב");
+        setUploadError(t("uploadFailed"));
       }
     }
     setStory(html);
@@ -166,10 +169,10 @@ export default function CampaignEdit() {
   return (
     <main className={styles.shell}>
       <div className={styles.head}>
-        <h1>{he.editTitle}</h1>
-        <Link to={`/campaigns/${campaign.id}`} className={styles.back}>← {campaign.name}</Link>
+        <h1>{t("editTitle")}</h1>
+        <Link to={`/${locale}/${routeCurrency}/campaigns/${campaign.id}`} className={styles.back}>← {campaign.name}</Link>
       </div>
-      <p className={styles.intro}>{he.editIntro}</p>
+      <p className={styles.intro}>{t("editIntro")}</p>
 
       {actionData?.errors?.length ? (
         <ul className={styles.errors}>
@@ -181,49 +184,49 @@ export default function CampaignEdit() {
 
       <form onSubmit={onSubmit} className={styles.form}>
         <label className={styles.field}>
-          <span>{he.fieldName}</span>
+          <span>{t("fieldName")}</span>
           <input value={name} onChange={(e) => setName(e.target.value)} required />
         </label>
 
         <label className={styles.field}>
-          <span>{he.fieldSubtitle}</span>
+          <span>{t("fieldSubtitle")}</span>
           <input value={subtitle} onChange={(e) => setSubtitle(e.target.value)} />
         </label>
 
         <div className={styles.row}>
           <label className={styles.field}>
-            <span>{he.fieldGoal}</span>
+            <span>{t("fieldGoal")}</span>
             <input type="number" min="1" value={goal} onChange={(e) => setGoal(e.target.value)} required />
           </label>
           <label className={styles.field}>
-            <span>{he.fieldCurrency}</span>
+            <span>{t("fieldCurrency")}</span>
             <input value={currency} onChange={(e) => setCurrency(e.target.value)} />
           </label>
         </div>
 
         <label className={styles.field}>
-          <span>{he.fieldStory}</span>
+          <span>{t("fieldStory")}</span>
           <textarea className={styles.code} rows={10} value={story} onChange={(e) => setStory(e.target.value)} />
         </label>
 
         <fieldset className={styles.fieldset}>
-          <legend>{he.imagesHeading}</legend>
+          <legend>{t("imagesHeading")}</legend>
           {uploadError && <p className={styles.uploadError}>{uploadError}</p>}
           <div className={styles.uploads}>
             <div className={styles.upload}>
-              <span className={styles.uploadLabel}>{he.bannerLabel}</span>
+              <span className={styles.uploadLabel}>{t("bannerLabel")}</span>
               {bannerPreview && <img className={styles.bannerPreview} src={bannerPreview} alt="" />}
               <input type="file" accept="image/*" onChange={onPickFile(setBannerPreview, setBannerSignedId)} />
             </div>
             <div className={styles.upload}>
-              <span className={styles.uploadLabel}>{he.avatarLabel}</span>
+              <span className={styles.uploadLabel}>{t("avatarLabel")}</span>
               {avatarPreview && <img className={styles.avatarPreview} src={avatarPreview} alt="" />}
               <input type="file" accept="image/*" onChange={onPickFile(setAvatarPreview, setAvatarSignedId)} />
             </div>
           </div>
 
           <div className={styles.upload}>
-            <span className={styles.uploadLabel}>{he.storyImagesLabel}</span>
+            <span className={styles.uploadLabel}>{t("storyImagesLabel")}</span>
             {storyThumbs.length > 0 && (
               <div className={styles.storyThumbs}>
                 {storyThumbs.map((u, i) => (
@@ -234,16 +237,16 @@ export default function CampaignEdit() {
                         type="button"
                         className={styles.storyToken}
                         onClick={() => copyEmbed(i)}
-                        title={he.copyEmbedTitle}
+                        title={t("copyEmbedTitle")}
                       >
-                        {copiedIdx === i ? he.copied : `campaigns/story/${i + 1}.jpg`}
+                        {copiedIdx === i ? t("copied") : `campaigns/story/${i + 1}.jpg`}
                       </button>
                     </figcaption>
                   </figure>
                 ))}
               </div>
             )}
-            <p className={styles.storyHint}>{he.storyEmbedHint}</p>
+            <p className={styles.storyHint}>{t("storyEmbedHint")}</p>
             <input
               type="file"
               accept="image/*"
@@ -254,69 +257,69 @@ export default function CampaignEdit() {
         </fieldset>
 
         <fieldset className={styles.fieldset}>
-          <legend>{he.presetsHeading}</legend>
+          <legend>{t("presetsHeading")}</legend>
           {presets.map((p, i) => (
             <div className={styles.presetRow} key={i}>
               <input
                 type="number"
                 min="1"
-                aria-label={he.presetAmountLabel}
-                placeholder={he.presetAmountLabel}
+                aria-label={t("presetAmountLabel")}
+                placeholder={t("presetAmountLabel")}
                 value={p.amount}
                 onChange={(e) => updatePreset(i, { amount: e.target.value })}
               />
               <input
-                aria-label={he.presetLabelLabel}
-                placeholder={he.presetLabelLabel}
+                aria-label={t("presetLabelLabel")}
+                placeholder={t("presetLabelLabel")}
                 value={p.label}
                 onChange={(e) => updatePreset(i, { label: e.target.value })}
               />
               <button type="button" className={styles.remove} onClick={() => setPresets((r) => r.filter((_, idx) => idx !== i))}>
-                {he.removePreset}
+                {t("removePreset")}
               </button>
             </div>
           ))}
           <button type="button" className={styles.add} onClick={() => setPresets((r) => [...r, { amount: "", label: "" }])}>
-            + {he.addPreset}
+            + {t("addPreset")}
           </button>
         </fieldset>
 
         <fieldset className={styles.fieldset}>
-          <legend>{he.orgHeading}</legend>
+          <legend>{t("orgHeading")}</legend>
           <label className={styles.field}>
-            <span>{he.fieldOrgName}</span>
+            <span>{t("fieldOrgName")}</span>
             <input value={orgName} onChange={(e) => setOrgName(e.target.value)} />
           </label>
           <div className={styles.row}>
             <label className={styles.field}>
-              <span>{he.email}</span>
+              <span>{t("email")}</span>
               <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
             </label>
             <label className={styles.field}>
-              <span>{he.phone}</span>
+              <span>{t("phone")}</span>
               <input value={phone} onChange={(e) => setPhone(e.target.value)} />
             </label>
           </div>
           <div className={styles.row}>
             <label className={styles.field}>
-              <span>{he.website}</span>
+              <span>{t("website")}</span>
               <input value={website} onChange={(e) => setWebsite(e.target.value)} />
             </label>
             <label className={styles.field}>
-              <span>{he.charityNumber}</span>
+              <span>{t("charityNumber")}</span>
               <input value={charityNumber} onChange={(e) => setCharityNumber(e.target.value)} />
             </label>
           </div>
           <label className={styles.field}>
-            <span>{he.fieldOrgAbout}</span>
+            <span>{t("fieldOrgAbout")}</span>
             <textarea className={styles.code} rows={5} value={about} onChange={(e) => setAbout(e.target.value)} />
           </label>
         </fieldset>
 
         <div className={styles.actions}>
-          <Link to={`/campaigns/${campaign.id}`} className={styles.cancel}>{he.cancel}</Link>
+          <Link to={`/${locale}/${routeCurrency}/campaigns/${campaign.id}`} className={styles.cancel}>{t("cancel")}</Link>
           <button type="submit" className={styles.save} disabled={saving}>
-            {saving ? he.saving : he.save}
+            {saving ? t("saving") : t("save")}
           </button>
         </div>
       </form>
