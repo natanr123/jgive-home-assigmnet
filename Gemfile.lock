@@ -90,7 +90,7 @@ GEM
     bundler-audit (0.9.3)
       bundler (>= 1.2.0)
       thor (~> 1.0)
-    concurrent-ruby (1.3.6)
+    concurrent-ruby (1.3.7)
     connection_pool (3.0.2)
     crass (1.0.6)
     date (3.5.1)
@@ -173,7 +173,7 @@ GEM
       base64
       fiber-storage
       logger
-    i18n (1.14.8)
+    i18n (1.15.2)
       concurrent-ruby (~> 1.0)
     i18n-js (4.2.4)
       glob (>= 0.4.0)
@@ -189,10 +189,10 @@ GEM
       reline (>= 0.4.2)
     jsbundling-rails (1.3.1)
       railties (>= 6.0.0)
-    json (2.19.8)
+    json (2.19.9)
     jwt (3.2.0)
       base64
-    kamal (2.11.0)
+    kamal (2.12.0)
       activesupport (>= 7.0)
       base64 (~> 0.2)
       bcrypt_pbkdf (~> 1.0)
