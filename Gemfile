@@ -45,7 +45,7 @@ gem "image_processing", "~> 1.2"
 # Google Cloud Storage backend for Active Storage (production blobs).
 # multi_json is a soft runtime dependency of representable (via google-apis-core) that
 # isn't auto-locked — declare it explicitly or the GCS adapter fails to load.
-gem "google-cloud-storage", "~> 1.52", require: false
+gem "google-cloud-storage", "~> 1.62", require: false
 gem "multi_json"
 
 group :development, :test do
